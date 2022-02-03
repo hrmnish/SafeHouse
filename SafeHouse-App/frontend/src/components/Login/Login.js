@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import './Login.css';
 
+// Defines Sign In / Sign Up Tabs component
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   
@@ -29,12 +30,14 @@ function TabPanel(props) {
   );
 }
 
+// Defines parameters for Tabs component
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
 };
 
+// Defines switching between Tabs
 function a11yProps(index) {
   return {
       id: `simple-tab-${index}`,
@@ -42,23 +45,24 @@ function a11yProps(index) {
   };
 }
 
+// Login component
 function Login() {
 
+  // Local variables
   const [value, setValue] = React.useState(0);
 
   const [state, setState] = React.useState({
     email: '',
     password: '',
     name: '',
- });
-
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  });
 
   const navigate = useNavigate();
 
+  // Local functions
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   function setEmail(event) {
     setState({...state, email: event.target.value});
@@ -82,8 +86,9 @@ function Login() {
       console.log('sign up clicked');
       console.log('email: ', state.email,'password: ', state.password, 'name: ', state.name);
       navigate("/desk");
-    }
+  }
 
+  // Defines UI for Login component
   return (
     <div className="login-container">
 
