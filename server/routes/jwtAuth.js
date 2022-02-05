@@ -18,7 +18,7 @@ router.post("/register", validInfo, async (req, res) => {
             return res.status(401).send("User already exist");
         }
 
-        //Bcrypt the password to enter in databse 
+        //Bcrypt the password to enter in database 
         const saltRound = 10;
         const salt = await bcrypt.genSalt(saltRound);
         const bcryptPassword = await bcrypt.hash(password, saltRound);
@@ -31,7 +31,7 @@ router.post("/register", validInfo, async (req, res) => {
         res.json({token});
         
     } catch (error) {
-        console.error(err.message);
+        console.error(error.message);
         res.status(500).send("Server Error");
     }
 });
@@ -61,16 +61,16 @@ router.post("/login", validInfo, async(req,res) => {
 
 
     } catch (error) {
-        console.error(err.message);
+        console.error(error.message);
         res.status(500).send("Server Error");
     }
 });
 
-router.get("/is-verity", authorization, async (req,res) => {
+router.get("/is-verified", authorization, async (req,res) => {
     try {
         res.json(true);
     } catch (error) {
-        console.error(err.message);
+        console.error(error.message);
         res.status(500).send("Server Error");        
     }
 })
