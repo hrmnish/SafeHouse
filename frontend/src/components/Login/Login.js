@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState }from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { useNavigate } from "react-router-dom";
 import './Login.css';
 
 // Defines Sign In / Sign Up Tabs component
@@ -46,18 +45,16 @@ function a11yProps(index) {
 }
 
 // Login component
-function Login() {
+const Login = ({setAuth}) => {
 
   // Local variables
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     email: '',
     password: '',
     name: '',
   });
-
-  const navigate = useNavigate();
 
   // Local functions
   const handleChange = (event, newValue) => {
@@ -76,17 +73,60 @@ function Login() {
     setState({...state, name: event.target.value});
   };
 
-  function clickSignIn() {
-    console.log('sign in clicked');
-    console.log('email: ', state.email,'password: ', state.password);
-    navigate("/desk");
-  }
+  const clickSignIn = async(e) => {
+    e.preventDefault();
+    let email = state.email;
+    let password = state.password;
+    try {
+      const body = {email, password};
+      const response = await fetch("http://localhost:5000/auth/login",
+        {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(body)
+        }
+      );
+      const parseResponse = await response.json();
+      console.log(parseResponse);
 
-  function clickSignUp() {
-      console.log('sign up clicked');
-      console.log('email: ', state.email,'password: ', state.password, 'name: ', state.name);
-      navigate("/desk");
-  }
+      if(parseResponse.token) {
+        localStorage.setItem('token', parseResponse.token);
+        setAuth(true);
+      } else {
+        setAuth(false);
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+};
+
+  const clickSignUp = async(e) => {
+    e.preventDefault();
+    let email = state.email;
+    let password = state.password;
+    let name = state.name;
+    try {
+      const body = {email, name, password};
+      
+      const response = await fetch('http://localhost:5000/auth/register', {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(body)    
+      });
+
+      const parseResponse = await response.json();
+      console.log(parseResponse);
+        
+      if(parseResponse.token) {
+        localStorage.setItem('token', parseResponse.token);
+        setAuth(true);
+      } else {
+        setAuth(false);
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+};
 
   // Defines UI for Login component
   return (
@@ -108,16 +148,16 @@ function Login() {
           <TabPanel value={value} index={0} className="tab-panel">
             <div>Welcome back</div>
             <div className="welcome">Sign in to your account</div>
-            <TextField id="outlined-basic" onChange={setEmail} label="Email" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
-            <TextField id="outlined-basic" onChange={setPassword} label="Password" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
+            <TextField onChange={setEmail} label="Email" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
+            <TextField onChange={setPassword} label="Password" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
             <Button variant="contained" onClick={clickSignIn}>Sign In</Button>
           </TabPanel>
           <TabPanel value={value} index={1} className="tab-panel">
             <div>Welcome to SafeHouse</div>
             <div className="welcome">Create an account now</div>
-            <TextField id="outlined-basic" onChange={setName} label="Full name" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
-            <TextField id="outlined-basic" onChange={setEmail} label="Email" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
-            <TextField id="outlined-basic" onChange={setPassword} label="Password" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
+            <TextField onChange={setName} label="Full name" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
+            <TextField onChange={setEmail} label="Email" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
+            <TextField onChange={setPassword} label="Password" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
             <Button variant="contained" onClick={clickSignUp}>Sign Up</Button>
           </TabPanel>
         </div>
