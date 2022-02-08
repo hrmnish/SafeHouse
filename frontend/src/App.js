@@ -36,8 +36,17 @@ function App() {
   return (
     <Fragment>
       <Router>
-        <div class="App">
+        <div className="App">
           <Routes>
+            <Route 
+              path="/" 
+              element={
+                !isAuthenticated ? (
+                <Login setAuth={setAuth}/>
+                ) : (
+                <Navigate to="/desk" />
+              )}
+            />
             <Route 
               path="/login" 
               element={

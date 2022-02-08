@@ -1,0 +1,9 @@
+.letter-container {
+    width: 600px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}

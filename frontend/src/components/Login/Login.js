@@ -56,23 +56,12 @@ const Login = ({setAuth}) => {
     name: '',
   });
 
-  // Local functions
+  // Set which tab to display
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  function setEmail(event) {
-    setState({...state, email: event.target.value});
-  };
-
-  function setPassword(event) {
-    setState({...state, password: event.target.value});
-  };
-
-  function setName(event) {
-    setState({...state, name: event.target.value});
-  };
-
+  // Verify user credentials and sign in
   const clickSignIn = async(e) => {
     e.preventDefault();
     let email = state.email;
@@ -98,8 +87,9 @@ const Login = ({setAuth}) => {
     } catch (err) {
       console.error(err.message);
     }
-};
+  };
 
+  // Store new user credentials and sign in
   const clickSignUp = async(e) => {
     e.preventDefault();
     let email = state.email;
@@ -126,7 +116,7 @@ const Login = ({setAuth}) => {
     } catch (err) {
       console.error(err.message);
     }
-};
+  };
 
   // Defines UI for Login component
   return (
@@ -145,19 +135,44 @@ const Login = ({setAuth}) => {
               <Tab label="Sign Up" {...a11yProps(1)} />
             </Tabs>
           </Box>
-          <TabPanel value={value} index={0} className="tab-panel">
+          <TabPanel className="tab-panel" value={value} index={0}>
             <div>Welcome back</div>
             <div className="welcome">Sign in to your account</div>
-            <TextField onChange={setEmail} label="Email" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
-            <TextField onChange={setPassword} label="Password" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
+            <TextField 
+              label="Email" 
+              variant="outlined" 
+              sx={{marginBottom: 2, width: 300 }}
+              onChange={e => setState({...state, email: e.target.value})} 
+            />
+            <TextField 
+              label="Password" 
+              variant="outlined" 
+              sx={{marginBottom: 2, width: 300 }}
+              onChange={e => setState({...state, password: e.target.value})} 
+            />
             <Button variant="contained" onClick={clickSignIn}>Sign In</Button>
           </TabPanel>
-          <TabPanel value={value} index={1} className="tab-panel">
+          <TabPanel className="tab-panel" value={value} index={1}>
             <div>Welcome to SafeHouse</div>
             <div className="welcome">Create an account now</div>
-            <TextField onChange={setName} label="Full name" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
-            <TextField onChange={setEmail} label="Email" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
-            <TextField onChange={setPassword} label="Password" variant="outlined" sx={{marginBottom: 2, width: 300 }}/>
+            <TextField 
+              label="Full name" 
+              variant="outlined" 
+              sx={{marginBottom: 2, width: 300 }}
+              onChange={e => setState({...state, name: e.target.value})} 
+            />
+            <TextField 
+              label="Email" 
+              variant="outlined" 
+              sx={{marginBottom: 2, width: 300 }}
+              onChange={e => setState({...state, email: e.target.value})} 
+            />
+            <TextField 
+              label="Password" 
+              variant="outlined" 
+              sx={{marginBottom: 2, width: 300 }}
+              onChange={e => setState({...state, password: e.target.value})} 
+            />
             <Button variant="contained" onClick={clickSignUp}>Sign Up</Button>
           </TabPanel>
         </div>
