@@ -28,7 +28,7 @@ router.post("/register", validInfo, async (req, res) => {
 
         //generate our jwt token
         const token = jwtGenerator(newUSER.rows[0].user_id);
-        res.json({token});
+        return res.json({token});
         
     } catch (error) {
         console.error(error.message);
@@ -45,7 +45,7 @@ router.post("/login", validInfo, async(req,res) => {
         const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
 
         if (user.rows.length === 0) {
-            return res.status(401).json("Password or Email is incorrect")
+            return res.status(401).json("Password or Email is incorrect");
         }
 
         //check if incoming password is the same as db password
@@ -57,8 +57,7 @@ router.post("/login", validInfo, async(req,res) => {
 
         //give them a jwt token
         const token = jwtGenerator(user.rows[0].user_id);
-        res.json({token});
-
+        return res.json({token});
 
     } catch (error) {
         console.error(error.message);
