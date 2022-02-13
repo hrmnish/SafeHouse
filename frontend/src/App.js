@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import Login from './components/Login/Login';
 import Desk from './components/Desk/Desk';
 import Letter from './components/Letter/Letter';
+import Reply from './components/Reply/Reply';
 import Inbox from './components/Inbox/Inbox';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import './App.css';
@@ -70,6 +71,15 @@ function App() {
               element={
                 isAuthenticated ? (
                 <Letter setAuth={setAuth}/>
+                ) : (
+                <Navigate to="/login" />
+              )}
+            />
+             <Route 
+              path="/reply" 
+              element={
+                isAuthenticated ? (
+                <Reply setAuth={setAuth}/>
                 ) : (
                 <Navigate to="/login" />
               )}
