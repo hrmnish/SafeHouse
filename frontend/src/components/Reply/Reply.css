@@ -1,0 +1,13 @@
+.letters {
+    display: flex;
+    flex-direction: row;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.MuiIconButton-root {
+    width: 50px;
+}
