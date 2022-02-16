@@ -1,5 +1,5 @@
 
-CREATE extension IF NOT EXISTS "uuid-ossp"
+CREATE extension IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid DEFAULT uuid_generate_v4(),
@@ -12,21 +12,21 @@ CREATE TABLE IF NOT EXISTS users(
 CREATE TABLE IF NOT EXISTS letters(
   letter_id uuid DEFAULT uuid_generate_v4(),
   sender_id uuid NOT NULL,
-  letter VARCHAR() -- add in later
+  letter VARCHAR(511) DEFAULT ' ',
   responses INT DEFAULT 0,
   recievable BOOLEAN DEFAULT TRUE,
-  send_date DATETIME DEFAULT GETDATE(), 
+  send_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY(letter_id),
-  FOREIGN KEY sender_id REFERENCES users(user_id)
+  FOREIGN KEY (sender_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS responses(
   response_id uuid DEFAULT uuid_generate_v4(),
   letter_id uuid NOT NULL,
   sender_id uuid NOT NULL,
-  response VARCHAR(), -- FIX LATER
-  send_date DATETIME DEFAULT GETDATE(), 
-  PRIMARY KEY(message_id),
-  FOREIGN KEY letter_id REFERENCES letters(letter_id),
-  FOREIGN KEY reciver_id REFERENCES users(user_id)
+  response VARCHAR(511) DEFAULT ' ',
+  send_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+  PRIMARY KEY(response_id),
+  FOREIGN KEY (letter_id) REFERENCES letters(letter_id),
+  FOREIGN KEY (sender_id) REFERENCES users(user_id)
 );
