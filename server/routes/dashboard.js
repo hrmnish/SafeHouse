@@ -25,7 +25,7 @@ router.post("/sendletter", authorize, async(req,res) => {
 // todo : make sure user doesnt see letters they responded to
 // accepts "user_id" as input
 // returns a letter 
-router.get("/getletter", authorize, async(req,res) => {
+router.get("/requestletters", authorize, async(req,res) => {
     try {
 
         // if (cache.size() < 10) {
@@ -50,7 +50,7 @@ router.get("/getletter", authorize, async(req,res) => {
             `select l.letter_id, l.letter 
             from letters as l, users as u 
             where $1 = u.user_id
-            and u.user_id <> l.sender_id 
+            and u.user_id <> l.sender_id
             and l.letter_id not in 
             ( 
                 select r.letter_id 
@@ -87,8 +87,8 @@ router.post("/sendresponse", authorize, async(req,res) => {
 })
 
 
-// gets top 
-router.get("/getresponse", authorize, async(req,res) => {
+// gets table of letters/responses for inbox view 
+router.get("/getinbox", authorize, async(req,res) => {
     try {
         const letter_id = req.body;
 
