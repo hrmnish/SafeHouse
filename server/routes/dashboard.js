@@ -61,8 +61,17 @@ router.get("/requestletters", authorize, async(req,res) => {
             limit 10"`,
             [req.user]
         );
+        
+        //if letter is empty 
+        if (letters.rows.length === 0) {
+            return res.status(400).json("Bad motherfucking request letter no here")
+        }
+
+        const jsonString = JSON.stringify(Object.assign({}, letters.rows))
 
         // TODO: send letters to frontend through json object
+        return res.status(200).json(jsonString)
+        
 
     } catch (error) {
         console.error(error.message);
