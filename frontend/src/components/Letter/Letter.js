@@ -43,11 +43,31 @@ const Letter = (props) => {
 
   const navigate = useNavigate();
 
-  // Save letter content
+  // Send letter content to database
   const sendLetter = async(e) => {
-    console.log("letter content:", state);
-    setOpen(true);
-  }
+    e.preventDefault();
+    try {
+      const body = {state};
+      const response = await fetch("http://localhost:5000/dashboard/sendletter",
+        {
+          method: "POST",
+          headers: {
+            'Content-type': 'application/json',
+            token: localStorage.token
+          },
+          body: JSON.stringify(body)
+        }
+      );
+      const parseResponse = await response.json();
+      if(parseResponse) {
+        setOpen(true);
+      } else {
+        console.log("Error: unable to send letter. Please try again")
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   // Defines UI for Letter component
   return (
@@ -59,7 +79,7 @@ const Letter = (props) => {
         fullWidth 
         rows={20} 
         placeholder="What's on your mind?" 
-        onChange={e => setState(e.target.value)}
+        onChange={e => setState(e.target.value)} 
       />
       <br />
       <br />

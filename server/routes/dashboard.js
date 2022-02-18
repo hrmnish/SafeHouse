@@ -10,10 +10,10 @@ var counter = 0;
 // no output unless error
 router.post("/sendletter", authorize, async(req,res) => {
     try {
-        const {letter} = req.body;
+        const letter = req.body.state;
 
         const insert = await pool.query("INSERT INTO letters (sender_id, letter) VALUES ($1, $2)", [req.user, letter]);
-
+        return res.json(true);
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Server Error");     
