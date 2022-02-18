@@ -88,6 +88,7 @@ router.post("/sendresponse", authorize, async(req,res) => {
         const {letter_id, letter} = req.body;
 
         const insert = await pool.query("INSERT INTO responses (letter_id, sender_id, response) VALUES ($1, $2, $3)", [letter_id, req.user, letter]);
+        res.status(200).send("Response sent")
 
     } catch (error) {
         console.error(error.message);
@@ -102,9 +103,11 @@ router.get("/getinbox", authorize, async(req,res) => {
         const letter_id = req.body;
 
         const response = await pool.query("SELECT response FROM responses WHERE letter_id = $1", [letter_id]);
+        
+        const jsonString = JSON.stringify(Object.assign({}, response.rows))
 
         if (response.rows.length != 0) {
-            return res.json(response.rows[0])
+            return res.status(200).json(jsonString)
         } else {
             return res.status(400).json("Response not found");
         }
