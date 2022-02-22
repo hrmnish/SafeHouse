@@ -1,20 +1,22 @@
-.reply-container {
+.response-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 90%;
+
 }
 
-.letters {
+.row {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
 }
 
 .buttons {
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
-}
-
-.MuiIconButton-root {
-    width: 50px;
+    width: 50%;
 }

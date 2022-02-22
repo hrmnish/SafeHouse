@@ -60,7 +60,7 @@ const Reply = () => {
 
   // Defines UI for Reply component
   return (
-    <div>
+    <div className="reply-container">
       <h1>Reply to a letter!</h1>
       <br />
       <div className="letters">
@@ -91,7 +91,7 @@ const Reply = () => {
       <br />
       <div className="buttons">
         <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-        <Button variant="contained" onClick={() => navigate("/letter")}>Reply</Button>
+        <Button variant="contained" onClick={() => navigate("/response",  { state: {letter: dict[index]} })}>Reply</Button>
       </div>
     </div>
   );
