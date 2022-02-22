@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -27,6 +27,29 @@ const Reply = () => {
     "2. This is the content of the second letter",
     "3. This is the content of the third letter",
   ]
+
+   // Get ten letters from database
+   const getLetters = async() => {
+    try {
+      const response = await fetch("http://localhost:3000/dashboard/requestletters",
+        {
+          method: "GET",
+          headers: {
+            'Content-type': 'application/json',
+            token: localStorage.token
+          },
+        }
+      );
+      const parseResponse = await response.json();
+      console.log(parseResponse);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getLetters();
+  }, []);
 
   // Custom made letter component
   function Letter(props) {
