@@ -48,7 +48,7 @@ const Letter = (props) => {
     e.preventDefault();
     try {
       const body = {state};
-      const response = await fetch("http://localhost:5000/dashboard/sendletter",
+      const response = await fetch("http://localhost:3000/dashboard/sendletter",
         {
           method: "POST",
           headers: {

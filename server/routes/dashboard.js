@@ -25,7 +25,7 @@ router.post("/sendletter", authorize, async(req,res) => {
 // todo : make sure user doesnt see letters they responded to
 // accepts "user_id" as input
 // returns a letter 
-router.get("/getletter", authorize, async(req,res) => {
+router.get("/requestletters", authorize, async(req,res) => {
     try {
 
         // if (cache.size() < 10) {
@@ -50,7 +50,7 @@ router.get("/getletter", authorize, async(req,res) => {
             `select l.letter_id, l.letter 
             from letters as l, users as u 
             where $1 = u.user_id
-            and u.user_id <> l.sender_id 
+            and u.user_id <> l.sender_id
             and l.letter_id not in 
             ( 
                 select r.letter_id 
@@ -61,8 +61,17 @@ router.get("/getletter", authorize, async(req,res) => {
             limit 10"`,
             [req.user]
         );
+        
+        //if letter is empty 
+        if (letters.rows.length === 0) {
+            return res.status(400).json("Bad motherfucking request letter no here")
+        }
+
+        const jsonString = JSON.stringify(Object.assign({}, letters.rows))
 
         // TODO: send letters to frontend through json object
+        return res.status(200).json(jsonString)
+        
 
     } catch (error) {
         console.error(error.message);
@@ -79,6 +88,7 @@ router.post("/sendresponse", authorize, async(req,res) => {
         const {letter_id, letter} = req.body;
 
         const insert = await pool.query("INSERT INTO responses (letter_id, sender_id, response) VALUES ($1, $2, $3)", [letter_id, req.user, letter]);
+        res.status(200).send("Response sent")
 
     } catch (error) {
         console.error(error.message);
@@ -87,15 +97,17 @@ router.post("/sendresponse", authorize, async(req,res) => {
 })
 
 
-// gets top 
-router.get("/getresponse", authorize, async(req,res) => {
+// gets table of letters/responses for inbox view 
+router.get("/getinbox", authorize, async(req,res) => {
     try {
         const letter_id = req.body;
 
         const response = await pool.query("SELECT response FROM responses WHERE letter_id = $1", [letter_id]);
+        
+        const jsonString = JSON.stringify(Object.assign({}, response.rows))
 
         if (response.rows.length != 0) {
-            return res.json(response.rows[0])
+            return res.status(200).json(jsonString)
         } else {
             return res.status(400).json("Response not found");
         }

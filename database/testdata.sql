@@ -22,21 +22,21 @@ while counter <= 5 loop
 end loop;
 end$$;
 
-INSERT INTO RESPONSES(sender_id, letter_id, response)
-SELECT u.user_id, l.letter_id, CONCAT ('Response from ', u.user_name)
-FROM users as u, letters as l
-WHERE l.letter_id in 
-(   
-    select l2.letter_id 
-    from letters as l2, users as u2
-    where u2.user_id = u.user_id
-    and u2.user_id <> l2.sender_id
-    and l2.letter_id not in ( select r.letter_id from responses as r where r.sender_id = u2.user_id)
-    order by l2.responses asc
-    limit 1
-)
+-- doesnt work
+-- INSERT INTO RESPONSES(sender_id, letter_id, response)
+-- SELECT u.user_id, l.letter_id, CONCAT ('Response from ', u.user_name)
+-- FROM users as u, letters as l
+-- WHERE l.letter_id in 
+-- (   
+--     select l2.letter_id 
+--     from letters as l2, users as u2
+--     where u2.user_id = u.user_id
+--     and u2.user_id <> l2.sender_id
+--     and l2.letter_id not in ( select r.letter_id from responses as r where r.sender_id = u2.user_id)
+--     order by l2.responses asc
+--     limit 1
+-- )
 
--- not working 
 -- UPDATE letters
 -- SET responses = 
 -- (
