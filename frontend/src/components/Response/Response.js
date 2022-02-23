@@ -39,18 +39,42 @@ function SimpleDialog(props) {
 const Response = (props) => {
 
   // Local variables
-  const [state, setState] = useState('');
-
-  const [open, setOpen] = React.useState(false);
-
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const location = useLocation();
 
+  // Store the user's response
+  const [state, setState] = useState('');
+
+  // Defines whether the dialog is open/closed
+  const [open, setOpen] = React.useState(false);
+
   // Send response content to database
-  const sendResponse = () => {
-    console.log("repsonse:", state);
-    setOpen(true);
+  const sendResponse = async(e) => {
+    e.preventDefault();
+    let letter_id = location.state.letter_id;
+    let letter = state;
+    try {
+      const body = {letter_id, letter};
+      const response = await fetch("http://localhost:3000/dashboard/sendresponse",
+        {
+          method: "POST",
+          headers: {
+            'Content-type': 'application/json',
+            token: localStorage.token
+          },
+          body: JSON.stringify(body)
+        }
+      );
+      const parseResponse = await response.json();
+      if(parseResponse) {
+        setOpen(true);
+      } else {
+        console.log("Error: unable to send letter. Please try again")
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   // Defines UI for Reply component

@@ -1,9 +1,7 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-// import CardContent from '@mui/material/CardContent';
-// import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -15,7 +13,7 @@ const Reply = () => {
   const navigate = useNavigate();
 
   // Total number of letters
-  const maxLetters = 9;
+  const [maxLetters, setMaxLetters] = useState(9);
 
   // Tracks the current letter in the stack
   const [index, setIndex] = useState(0);
@@ -25,9 +23,9 @@ const Reply = () => {
     letter_id: [],
     content: []
   });
-    
 
-   // Get ten letters from database
+  useEffect(() => {
+    // Get ten letters from database
    const getLetters = async() => {
     try {
       const response = await fetch("http://localhost:3000/dashboard/requestletters",
@@ -40,8 +38,9 @@ const Reply = () => {
         }
       );
       const parseResponse = await response.json();
-      //console.log(parseResponse);
       let parsedJSON = JSON.parse(parseResponse);
+
+      setMaxLetters(Object.keys(parsedJSON).length - 1);
 
       let tempLetterId = [];
       let tempLetterContent = [];
@@ -49,16 +48,12 @@ const Reply = () => {
         tempLetterId.push(parsedJSON[i].letter_id);
         tempLetterContent.push(parsedJSON[i].letter);
       })
-      setState({...state, letter_id: tempLetterId});
-      setState({...state, content: tempLetterContent});
-
+      setState(prevState => ({ content: tempLetterContent, letter_id: tempLetterId }));
     } catch (err) {
       console.error(err.message);
     }
   };
-
-  useEffect(() => {
-    getLetters();
+  getLetters();
   }, []);
 
   // Displays the previous letter
@@ -114,7 +109,11 @@ const Reply = () => {
       <br />
       <div className="buttons">
         <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-        <Button variant="contained" onClick={() => navigate("/response",  { state: {letter: state.content[index]} })}>Reply</Button>
+        <Button variant="contained" onClick={() => navigate("/response",  
+          { state: {letter: state.content[index], 
+            letter_id: state.letter_id[index]}})}>
+          Reply
+        </Button>
       </div>
     </div>
   );
