@@ -58,18 +58,17 @@ router.get("/requestletters", authorize, async(req,res) => {
                 where r.sender_id = u.user_id
             ) 
             order by l.responses asc 
-            limit 10"`,
+            limit 10`,
             [req.user]
         );
         
-        //if letter is empty 
+        // if letter is empty 
         if (letters.rows.length === 0) {
             return res.status(400).json("Bad motherfucking request letter no here")
         }
 
         const jsonString = JSON.stringify(Object.assign({}, letters.rows))
 
-        // TODO: send letters to frontend through json object
         return res.status(200).json(jsonString)
         
 
@@ -88,7 +87,7 @@ router.post("/sendresponse", authorize, async(req,res) => {
         const {letter_id, letter} = req.body;
 
         const insert = await pool.query("INSERT INTO responses (letter_id, sender_id, response) VALUES ($1, $2, $3)", [letter_id, req.user, letter]);
-        res.status(200).send("Response sent")
+        res.status(200).send(true);
 
     } catch (error) {
         console.error(error.message);
