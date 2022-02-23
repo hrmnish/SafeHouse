@@ -2,9 +2,8 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-//import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
+// import CardContent from '@mui/material/CardContent';
+// import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -29,41 +28,27 @@ const Reply = () => {
   ]
 
    // Get ten letters from database
-   const getLetters = async() => {
-    try {
-      const response = await fetch("http://localhost:3000/dashboard/requestletters",
-        {
-          method: "GET",
-          headers: {
-            'Content-type': 'application/json',
-            token: localStorage.token
-          },
-        }
-      );
-      const parseResponse = await response.json();
-      console.log(parseResponse);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+  //  const getLetters = async() => {
+  //   try {
+  //     const response = await fetch("http://localhost:3000/dashboard/requestletters",
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           'Content-type': 'application/json',
+  //           token: localStorage.token
+  //         },
+  //       }
+  //     );
+  //     const parseResponse = await response.json();
+  //     console.log(parseResponse);
+  //   } catch (err) {
+  //     console.error(err.message);
+  //   }
+  // };
 
-  useEffect(() => {
-    getLetters();
-  }, []);
-
-  // Custom made letter component
-  function Letter(props) {
-    const { content } = props;
-    return (
-    <Fragment>
-      <CardContent>
-        <Typography sx={{ fontSize: 17 }} gutterBottom>
-          {content}
-        </Typography>
-      </CardContent>
-    </Fragment>
-    );
-  };
+  // useEffect(() => {
+  //   getLetters();
+  // }, []);
 
   // Displays the previous letter
   const clickBack = () => {
@@ -98,7 +83,7 @@ const Reply = () => {
         }
 
         <Card sx={{ minWidth: 600, minHeight: 400 }}>
-          <Letter content={dict[index]} />
+          {dict[index]}
         </Card>
 
         { index < maxLetters ?
