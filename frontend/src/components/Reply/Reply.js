@@ -15,40 +15,51 @@ const Reply = () => {
   const navigate = useNavigate();
 
   // Total number of letters
-  const maxLetters = 2;
+  const maxLetters = 9;
 
   // Tracks the current letter in the stack
   const [index, setIndex] = useState(0);
 
-  // Hardcoded values for letters
-  const dict = [
-    "1. This is the content of the first letter",
-    "2. This is the content of the second letter",
-    "3. This is the content of the third letter",
-  ]
+  // Stores loaded letters and letter ids
+  let [state, setState] = useState({
+    letter_id: [],
+    content: []
+  });
+    
 
    // Get ten letters from database
-  //  const getLetters = async() => {
-  //   try {
-  //     const response = await fetch("http://localhost:3000/dashboard/requestletters",
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           'Content-type': 'application/json',
-  //           token: localStorage.token
-  //         },
-  //       }
-  //     );
-  //     const parseResponse = await response.json();
-  //     console.log(parseResponse);
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // };
+   const getLetters = async() => {
+    try {
+      const response = await fetch("http://localhost:3000/dashboard/requestletters",
+        {
+          method: "GET",
+          headers: {
+            'Content-type': 'application/json',
+            token: localStorage.token
+          },
+        }
+      );
+      const parseResponse = await response.json();
+      //console.log(parseResponse);
+      let parsedJSON = JSON.parse(parseResponse);
 
-  // useEffect(() => {
-  //   getLetters();
-  // }, []);
+      let tempLetterId = [];
+      let tempLetterContent = [];
+      Object.keys(parsedJSON).forEach(i => {
+        tempLetterId.push(parsedJSON[i].letter_id);
+        tempLetterContent.push(parsedJSON[i].letter);
+      })
+      setState({...state, letter_id: tempLetterId});
+      setState({...state, content: tempLetterContent});
+
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getLetters();
+  }, []);
 
   // Displays the previous letter
   const clickBack = () => {
@@ -82,9 +93,13 @@ const Reply = () => {
         </IconButton>
         }
 
+        { state.content.length > 0 ?
         <Card sx={{ minWidth: 600, minHeight: 400 }}>
-          {dict[index]}
+          {state.content[index]}
         </Card>
+        :
+        null
+        }
 
         { index < maxLetters ?
         <IconButton onClick={clickNext} disableRipple>
@@ -99,7 +114,7 @@ const Reply = () => {
       <br />
       <div className="buttons">
         <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-        <Button variant="contained" onClick={() => navigate("/response",  { state: {letter: dict[index]} })}>Reply</Button>
+        <Button variant="contained" onClick={() => navigate("/response",  { state: {letter: state.content[index]} })}>Reply</Button>
       </div>
     </div>
   );

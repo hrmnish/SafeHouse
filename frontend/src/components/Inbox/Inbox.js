@@ -101,30 +101,26 @@ const Inbox = (props) => {
   }
 
   function ResponseButtons(props) {
-    if(!sortByLetter) {
-      if(props.arrow === "back") {
-        if (index.response > 0) {
-        return  <IconButton onClick={clickPreviousResponse} disableRipple>
+    if(props.arrow === "back") {
+      if (index.response > 0) {
+      return  <IconButton onClick={clickPreviousResponse} disableRipple>
+                <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
+              </IconButton>;
+      } else {
+        return  <IconButton onClick={clickPreviousResponse} disabled disableRipple>
                   <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
                 </IconButton>;
-        } else {
-          return  <IconButton onClick={clickPreviousResponse} disabled disableRipple>
-                    <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
-                  </IconButton>;
-        }
-      } else {
-        if (index.response < maxLetters) {
-          return  <IconButton onClick={clickNextResponse} disableRipple>
-                    <NavigateNextIcon sx={{ fontSize: "50px" }}/>
-                  </IconButton>;
-          } else {
-            return  <IconButton onClick={clickNextResponse} disabled disableRipple>
-                      <NavigateNextIcon sx={{ fontSize: "50px" }}/>
-                    </IconButton>
-          }
       }
     } else {
-      return null;
+      if (index.response < maxLetters) {
+        return  <IconButton onClick={clickNextResponse} disableRipple>
+                  <NavigateNextIcon sx={{ fontSize: "50px" }}/>
+                </IconButton>;
+        } else {
+          return  <IconButton onClick={clickNextResponse} disabled disableRipple>
+                    <NavigateNextIcon sx={{ fontSize: "50px" }}/>
+                  </IconButton>
+        }
     }
   }
 
