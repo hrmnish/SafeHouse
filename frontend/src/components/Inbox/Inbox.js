@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
@@ -44,7 +44,7 @@ const Inbox = (props) => {
   const navigate = useNavigate();
 
   // Total number of letters
-  const maxLetters = 2;
+  const [maxLetters, setMaxLetters] = useState(1);
 
   // Tracks the current letter in the stack
   const [index, setIndex] = useState({
@@ -58,12 +58,18 @@ const Inbox = (props) => {
   // Defines whether the dialog is open/closed
   const [open, setOpen] = React.useState(false);
 
+  // Stores loaded letters and letter ids
+  let [state, setState] = useState({
+    letter_id: [],
+    content: []
+  });
+
   // Hardcoded values for letters
-  const letterDict = [
-    "1. This is the content of the first letter",
-    "2. This is the content of the second letter",
-    "3. This is the content of the third letter",
-  ];
+  // const letterDict = [
+  //   "1. This is the content of the first letter",
+  //   "2. This is the content of the second letter",
+  //   "3. This is the content of the third letter",
+  // ];
 
   // Hardcoded values for responses
   const responsesDict = [
@@ -124,6 +130,79 @@ const Inbox = (props) => {
     }
   }
 
+  useEffect(() => {
+    // Get ten letters from database
+   const getLetters = async() => {
+    try {
+      const response = await fetch("http://localhost:3000/dashboard/requestletters",
+        {
+          method: "GET",
+          headers: {
+            'Content-type': 'application/json',
+            token: localStorage.token
+          },
+        }
+      );
+      const parseResponse = await response.json();
+      let parsedJSON = JSON.parse(parseResponse);
+
+      setMaxLetters(Object.keys(parsedJSON).length - 1);
+
+      let tempLetterId = [];
+      let tempLetterContent = [];
+      Object.keys(parsedJSON).forEach(i => {
+        tempLetterId.push(parsedJSON[i].letter_id);
+        tempLetterContent.push(parsedJSON[i].letter);
+      })
+      setState(prevState => ({ content: tempLetterContent, letter_id: tempLetterId }));
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+  getLetters();
+  }, []);
+
+  useEffect(() => {
+    console.log(state.content);
+    console.log(state.letter_id);
+  }, [state.content, state.letter_id])
+
+  useEffect(() => {
+    // Get ten letters from database
+   const getInbox = async() => {
+   let letter_id = state.letter_id[index.letter];
+    try {
+    const body = {letter_id};
+      const response = await fetch("http://localhost:3000/dashboard/getinbox",
+        {
+          method: "POST",
+          headers: {
+            'Content-type': 'application/json',
+            token: localStorage.token
+          },
+        body: JSON.stringify(body)
+        }
+      );
+      const parseResponse = await response.json();
+      let parsedJSON = JSON.parse(parseResponse);
+      console.log(parsedJSON);
+
+      // setMaxLetters(Object.keys(parsedJSON).length - 1);
+
+      // let tempLetterId = [];
+      // let tempLetterContent = [];
+      // Object.keys(parsedJSON).forEach(i => {
+      //   tempLetterId.push(parsedJSON[i].letter_id);
+      //   tempLetterContent.push(parsedJSON[i].letter);
+      // })
+      // setState(prevState => ({ content: tempLetterContent, letter_id: tempLetterId }));
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+  getInbox();
+  }, [index.letter, state.letter_id]);
+
   // Displays the previous letter
   const clickPreviousLetter = () => {
     console.log("back button clicked!")
@@ -167,9 +246,13 @@ const Inbox = (props) => {
           <div className="row">
             <LetterButtons arrow={"back"} />
 
+            { state.content.length > 0 ?
             <Card sx={{ minWidth: 600, minHeight: 400 }}>
-              {letterDict[index.letter]}
+              {state.content[index.letter]}
             </Card>
+            :
+            null
+            }
 
             <LetterButtons arrow={"next"} />
           </div>

@@ -97,18 +97,21 @@ router.post("/sendresponse", authorize, async(req,res) => {
 
 
 // gets table of letters/responses for inbox view 
-router.get("/getinbox", authorize, async(req,res) => {
+router.post("/getinbox", authorize, async(req,res) => {
     try {
-        const letter_id = req.body;
+        console.log("in /getinbox");
+        const letter_id = req.body.letter_id;
+        console.log("letter_id: ", letter_id);
 
         const response = await pool.query("SELECT response FROM responses WHERE letter_id = $1", [letter_id]);
         
         const jsonString = JSON.stringify(Object.assign({}, response.rows))
+        console.log(jsonString);
 
         if (response.rows.length != 0) {
             return res.status(200).json(jsonString)
         } else {
-            return res.status(400).json("Response not found");
+            return res.status(400).json(false);
         }
 
     } catch (error) {
