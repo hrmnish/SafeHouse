@@ -21,30 +21,9 @@ router.post("/sendletter", authorize, async(req,res) => {
 })
 
 // gets top letter from cache, if cache is near empty, update cache **FOR REQUEST A LETTER NOT FOR INBOX**
-// todo : reset cache when counter hits 10
-// todo : make sure user doesnt see letters they responded to
-// accepts "user_id" as input
-// returns a letter 
+
 router.get("/requestletters", authorize, async(req,res) => {
     try {
-
-        // if (cache.size() < 10) {
-        //     const letters = await pool.query("SELECT * FROM letters ORDER BY responses DESC WHERE responses <= 10 AND sender_id <> $1", [req.user]);
-        //     for (i = 0; i < letters.rows.length; i++) {
-        //         cache.put(letters.rows[i].letter_id, letters.rows[i].letter, 300);
-        //     }
-        // }
-        
-        // var keys = cache.keys();
-        // if (counter != 10) {
-        //     counter++;
-        //     return res.json({ keys,[counter] : cache.get(keys[counter]) });
-        // }
-
-        // if (counter == 10) { 
-        //     counter = 0; 
-        // }
-        
         // gather 10 valid letters that the user hasn't responded to yet
         const letters = await pool.query(
             `select l.letter_id, l.letter 
@@ -80,9 +59,7 @@ router.get("/requestletters", authorize, async(req,res) => {
 })
 
 // stores user response in to response table
-// todo update letters table aswell
-// accepts "letter_id", "response", and "user_id"
-// no ouptu  unless error
+
 router.post("/sendresponse", authorize, async(req,res) => {
     try {
         const {letter_id, letter} = req.body;
@@ -98,7 +75,7 @@ router.post("/sendresponse", authorize, async(req,res) => {
 
 
 // gets table of letters/responses for inbox view 
-router.get("/getinbox", authorize, async(req,res) => {
+router.post("/getinbox", authorize, async(req,res) => {
     try {
         const letter_id = req.body;
 
@@ -110,6 +87,31 @@ router.get("/getinbox", authorize, async(req,res) => {
             return res.status(200).json(jsonString)
         } else {
             return res.status(400).json("Response not found");
+        }
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Server Error");     
+    }
+})
+
+router.get("/getinbox", authorize, async(req,res) => {
+    try {
+        const letters = await pool.query(
+            `select l.letter_id, l.letter 
+            from letters as l, users as u 
+            where $1 = u.user_id
+            and u.user_id = l.sender_id
+            order by l.responses asc`,
+            [req.user]
+        );
+
+        const jsonString = JSON.stringify(Object.assign({}, response.rows))
+        
+        if (response.rows.length != 0) {
+            return res.status(200).json(jsonString)
+        } else {
+            return res.status(400).json("Letters not found");
         }
 
     } catch (error) {
