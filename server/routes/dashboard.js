@@ -74,16 +74,16 @@ router.post("/sendresponse", authorize, async(req,res) => {
 
 
 // gets table of letters/responses for inbox view 
-router.post("/getinbox", authorize, async(req,res) => {
+router.post("/getinboxresponses", authorize, async(req,res) => {
     try {
-        console.log("in /getinbox");
+        //console.log("in /getinboxresponses");
         const letter_id = req.body.letter_id;
-        console.log("letter_id: ", letter_id);
+        //console.log("letter_id: ", letter_id);
 
         const response = await pool.query("SELECT response FROM responses WHERE letter_id = $1", [letter_id]);
         
         const jsonString = JSON.stringify(Object.assign({}, response.rows))
-        console.log(jsonString);
+        //console.log(jsonString);
 
         if (response.rows.length != 0) {
             return res.status(200).json(jsonString)
@@ -93,12 +93,14 @@ router.post("/getinbox", authorize, async(req,res) => {
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Server Error");     
+        res.status(500).send(false);     
     }
 })
 
-router.get("/getinbox", authorize, async(req,res) => {
+router.get("/getinboxletters", authorize, async(req,res) => {
     try {
+        //console.log("in /getinboxletters");
+
         const letters = await pool.query(
             `select l.letter_id, l.letter 
             from letters as l, users as u 
@@ -108,17 +110,18 @@ router.get("/getinbox", authorize, async(req,res) => {
             [req.user]
         );
 
-        const jsonString = JSON.stringify(Object.assign({}, response.rows))
+        const jsonString = JSON.stringify(Object.assign({}, letters.rows))
+        //console.log(jsonString);
         
-        if (response.rows.length != 0) {
+        if (letters.rows.length != 0) {
             return res.status(200).json(jsonString)
         } else {
-            return res.status(400).json("Letters not found");
+            return res.status(400).json(false);
         }
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Server Error");     
+        res.status(500).send(false);     
     }
 })
 
