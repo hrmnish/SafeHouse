@@ -8,36 +8,37 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
+import Typography from '@mui/material/Typography';
 import './Inbox.css';
 
-function SimpleDialog(props) {
+// function SimpleDialog(props) {
 
-  // Local variables
-  const { onClose, open } = props;
+//   // Local variables
+//   const { onClose, open } = props;
   
-  const navigate = useNavigate();
+//   const navigate = useNavigate();
 
-  // Defines UI for confirmation dialog
-  return (
-    <Dialog fullWidth onClose={() => onClose()} open={open}>
-      <div className="centered">
-        <DialogTitle align="center">Are you sure you want to archive this?</DialogTitle>
-        <br />
-        <br />
-        <br />
-        <div className="buttons">
-          <Button onClick={() => onClose()}>Cancel</Button>
-          <Button onClick={() => navigate("/desk")}>Archive</Button>
-        </div>
-      </div>
-    </Dialog>
-  );
-}
+//   // Defines UI for confirmation dialog
+//   return (
+//     <Dialog fullWidth onClose={() => onClose()} open={open}>
+//       <div className="centered">
+//         <DialogTitle align="center">Are you sure you want to archive this?</DialogTitle>
+//         <br />
+//         <br />
+//         <br />
+//         <div className="buttons">
+//           <Button onClick={() => onClose()}>Cancel</Button>
+//           <Button onClick={() => navigate("/desk")}>Archive</Button>
+//         </div>
+//       </div>
+//     </Dialog>
+//   );
+// }
 
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-};
+// SimpleDialog.propTypes = {
+//   onClose: PropTypes.func.isRequired,
+//   open: PropTypes.bool.isRequired,
+// };
 
 const Inbox = (props) => {
   // Local variables
@@ -114,7 +115,7 @@ const Inbox = (props) => {
                 </IconButton>;
       }
     } else {
-      if (index.response < maximum.letter) {
+      if (index.response < maximum.response) {
         return  <IconButton onClick={clickNextResponse} disableRipple>
                   <NavigateNextIcon sx={{ fontSize: "50px" }}/>
                 </IconButton>;
@@ -126,9 +127,28 @@ const Inbox = (props) => {
     }
   }
 
+  function ActionButtons(props) {
+    if(state.letter.length === 0) {
+      return <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
+    }
+    else if(sortByLetter) {
+      return <Fragment>
+        <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
+        <Button variant="contained" onClick={() => setSort(!sortByLetter)}>Sort by Response</Button>
+        {/* <Button variant="contained">Say Thanks</Button> */}
+      </Fragment>
+    } 
+    else {
+      return <Fragment>
+        <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
+        <Button variant="contained" onClick={() => setSort(!sortByLetter)}>Sort by Letter</Button>
+        {/* <Button variant="contained">Say Thanks</Button> */}
+      </Fragment>
+    }
+  }
+
   useEffect(() => {
     const getInbox = async() => {
-     console.log("get inbox")
     try {
       // Get ten letters from database
       const letters = await fetch("http://localhost:3000/dashboard/getinboxletters",
@@ -152,7 +172,6 @@ const Inbox = (props) => {
       
       // Get responses from database
       let letter_id = tempLetterId[index.letter];
-      console.log("letter_id", letter_id);
       const body = {letter_id};
       const responses = await fetch("http://localhost:3000/dashboard/getinboxresponses",
         {
@@ -169,9 +188,9 @@ const Inbox = (props) => {
       Promise.all([letters, responses])
       .then(()=> {
         let parsedLetters = JSON.parse(letters);
-        console.log(parsedLetters);
+        //console.log(parsedLetters);
         let parsedResponses = JSON.parse(responses);
-        console.log(parsedResponses);
+        //console.log(parsedResponses);
 
         // Prepare to save response data
         setMaximum(() => ({ 
@@ -180,7 +199,6 @@ const Inbox = (props) => {
         );
         let tempResponseContent = [];
         Object.keys(parsedResponses).forEach(i => {
-          console.log(parsedResponses[i])
           tempResponseContent.push(parsedResponses[i].response);
         })
 
@@ -202,7 +220,6 @@ const Inbox = (props) => {
   const getResponses = async(e) => {
     try {
       let letter_id = state.letter_id[e];
-      console.log("letter_id", letter_id);
       const body = {letter_id};
       const response = await fetch("http://localhost:3000/dashboard/getinboxresponses",
         {
@@ -215,18 +232,16 @@ const Inbox = (props) => {
         }
       )
       const parseResponse = await response.json();
-      console.log(parseResponse);
+      //console.log(parseResponse);
       if(parseResponse) {
-        console.log("response received!")
         let parsedJSON = JSON.parse(parseResponse);
-        console.log(parsedJSON);
+        //console.log(parsedJSON);
         setMaximum(() => ({ 
           letter: maximum.letter,
           response: Object.keys(parsedJSON).length - 1 })
         );
         let tempResponseContent = [];
         Object.keys(parsedJSON).forEach(i => {
-          console.log(parsedJSON[i])
           tempResponseContent.push(parsedJSON[i].response);
         })
         setState(() => ({
@@ -246,21 +261,20 @@ const Inbox = (props) => {
     }
   };
 
-  useEffect(() => {
-    console.log("logging!")
-    console.log(state.letter);
-    console.log(state.letter_id);
-    console.log(state.response);
-    console.log(maximum.letter);
-    console.log(maximum.response);
-    console.log(index.letter);
-    console.log(index.response);
-    console.log(state.response[index.response])
-  }, [state.letter, state.letter_id, state.response, state.response_id, maximum.letter, maximum.response, index.letter, index.response])
+  // useEffect(() => {
+  //   console.log("logging!")
+  //   console.log(state.letter);
+  //   console.log(state.letter_id);
+  //   console.log(state.response);
+  //   console.log(maximum.letter);
+  //   console.log(maximum.response);
+  //   console.log(index.letter);
+  //   console.log(index.response);
+  //   console.log(state.response[index.response])
+  // }, [state.letter, state.letter_id, state.response, state.response_id, maximum.letter, maximum.response, index.letter, index.response])
 
   // Displays the previous letter
   const clickPreviousLetter = () => {
-    console.log("back button clicked!")
     if(index.letter !== 0) {
       getResponses(index.letter-1);
       setIndex({...index, letter: index.letter-1});
@@ -269,7 +283,6 @@ const Inbox = (props) => {
 
   // Displays the next letter
   const clickNextLetter = () => {
-    console.log("next button clicked!")
     if(index.letter !== maximum.letter) {
       getResponses(index.letter+1);
       setIndex({...index, letter: index.letter+1});
@@ -278,7 +291,6 @@ const Inbox = (props) => {
 
   // Displays the previous response
   const clickPreviousResponse = () => {
-    console.log("back button clicked!")
     if(index.response !== 0) {
       setIndex({...index, response: index.response-1});
     }
@@ -286,7 +298,6 @@ const Inbox = (props) => {
   
   // Displays the next response
   const clickNextResponse = () => {
-    console.log("next button clicked!")
     if(index.response !== maximum.letter) {
       setIndex({...index, response: index.response+1});
     }
@@ -301,7 +312,7 @@ const Inbox = (props) => {
         <div className="centered">
           <div className="row">
 
-            { state.letter ?
+            { state.letter.length > 0 ?
             <Fragment>
               <LetterButtons arrow={"back"} />
               <Card sx={{ minWidth: 600, minHeight: 400 }}>
@@ -310,7 +321,7 @@ const Inbox = (props) => {
               <LetterButtons arrow={"next"} />
             </Fragment>
             :
-            null
+            <Typography variant="h6" className="no-letters">You have not sent any letters yet.</Typography>
             }
 
           </div>
@@ -337,18 +348,12 @@ const Inbox = (props) => {
       </div>
       <br />
       <div className="bottom-buttons">
-        <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-        { sortByLetter ? 
-        <Button variant="contained" onClick={() => setSort(!sortByLetter)}>Sort by Response</Button>
-        :
-        <Button variant="contained" onClick={() => setSort(!sortByLetter)}>Sort by Letter</Button>
-        }
-        <Button variant="contained">Say Thanks</Button>
+      <ActionButtons></ActionButtons>
       </div>
-      <SimpleDialog
+      {/* <SimpleDialog
         open={open}
         onClose={() => setOpen(false)}
-      />
+      /> */}
     </div>
   );
 };

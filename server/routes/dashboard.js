@@ -76,14 +76,11 @@ router.post("/sendresponse", authorize, async(req,res) => {
 // gets table of letters/responses for inbox view 
 router.post("/getinboxresponses", authorize, async(req,res) => {
     try {
-        //console.log("in /getinboxresponses");
         const letter_id = req.body.letter_id;
-        //console.log("letter_id: ", letter_id);
 
-        const response = await pool.query("SELECT response FROM responses WHERE letter_id = $1", [letter_id]);
+        const response = await pool.query("SELECT response FROM responses WHERE letter_id = $1 ORDER BY response asc", [letter_id]);
         
         const jsonString = JSON.stringify(Object.assign({}, response.rows))
-        //console.log(jsonString);
 
         if (response.rows.length != 0) {
             return res.status(200).json(jsonString)
@@ -99,7 +96,6 @@ router.post("/getinboxresponses", authorize, async(req,res) => {
 
 router.get("/getinboxletters", authorize, async(req,res) => {
     try {
-        //console.log("in /getinboxletters");
 
         const letters = await pool.query(
             `select l.letter_id, l.letter 
@@ -111,7 +107,6 @@ router.get("/getinboxletters", authorize, async(req,res) => {
         );
 
         const jsonString = JSON.stringify(Object.assign({}, letters.rows))
-        //console.log(jsonString);
         
         if (letters.rows.length != 0) {
             return res.status(200).json(jsonString)

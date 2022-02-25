@@ -9,6 +9,8 @@
 .row {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .centered {
@@ -16,6 +18,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.no-letters {
+    width: 500px;
 }
 
 .buttons {
