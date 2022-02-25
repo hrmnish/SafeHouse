@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
@@ -44,7 +44,10 @@ const Inbox = (props) => {
   const navigate = useNavigate();
 
   // Total number of letters
-  const [maxLetters, setMaxLetters] = useState(1);
+  const [maximum, setMaximum] = useState({
+    letter: 1,
+    response: 1
+  });
 
   // Tracks the current letter in the stack
   const [index, setIndex] = useState({
@@ -61,26 +64,16 @@ const Inbox = (props) => {
   // Stores loaded letters and letter ids
   let [state, setState] = useState({
     letter_id: [],
-    content: []
+    letter: [],
+    response: [],
   });
-
-  // Hardcoded values for letters
-  // const letterDict = [
-  //   "1. This is the content of the first letter",
-  //   "2. This is the content of the second letter",
-  //   "3. This is the content of the third letter",
-  // ];
-
-  // Hardcoded values for responses
-  const responsesDict = [
-    "1. This is the content of the first response",
-    "2. This is the content of the second response",
-    "3. This is the content of the third response",
-  ];
 
   function LetterButtons(props) {
     if(sortByLetter) {
-      if(props.arrow === "back") {
+      if(state.letter.length <= 1) {
+        return null;
+      }
+      else if(props.arrow === "back") {
         if (index.letter > 0) {
         return  <IconButton onClick={clickPreviousLetter} disableRipple>
                   <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
@@ -91,7 +84,7 @@ const Inbox = (props) => {
                   </IconButton>;
         }
       } else {
-        if (index.letter < maxLetters) {
+        if (index.letter < maximum.letter) {
           return  <IconButton onClick={clickNextLetter} disableRipple>
                     <NavigateNextIcon sx={{ fontSize: "50px" }}/>
                   </IconButton>;
@@ -107,7 +100,10 @@ const Inbox = (props) => {
   }
 
   function ResponseButtons(props) {
-    if(props.arrow === "back") {
+    if(state.response.length <= 1) {
+      return null;
+    }
+    else if(props.arrow === "back") {
       if (index.response > 0) {
       return  <IconButton onClick={clickPreviousResponse} disableRipple>
                 <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
@@ -118,7 +114,7 @@ const Inbox = (props) => {
                 </IconButton>;
       }
     } else {
-      if (index.response < maxLetters) {
+      if (index.response < maximum.letter) {
         return  <IconButton onClick={clickNextResponse} disableRipple>
                   <NavigateNextIcon sx={{ fontSize: "50px" }}/>
                 </IconButton>;
@@ -131,49 +127,34 @@ const Inbox = (props) => {
   }
 
   useEffect(() => {
-    // Get ten letters from database
-   const getLetters = async() => {
+    const getInbox = async() => {
+     console.log("get inbox")
     try {
-      const response = await fetch("http://localhost:3000/dashboard/requestletters",
-        {
-          method: "GET",
-          headers: {
-            'Content-type': 'application/json',
-            token: localStorage.token
-          },
-        }
-      );
-      const parseResponse = await response.json();
-      let parsedJSON = JSON.parse(parseResponse);
-
-      setMaxLetters(Object.keys(parsedJSON).length - 1);
-
+      // Get ten letters from database
+      const letters = await fetch("http://localhost:3000/dashboard/getinboxletters",
+      {
+        method: "GET",
+        headers: {
+          'Content-type': 'application/json',
+          token: localStorage.token
+        },
+      })
+      .then(response => response.json());
+      let parsedJSON = JSON.parse(letters);
+      // Prepare to save letter and letter_id data
+      setMaximum(() => ({ letter: Object.keys(parsedJSON).length - 1 }));
       let tempLetterId = [];
       let tempLetterContent = [];
       Object.keys(parsedJSON).forEach(i => {
         tempLetterId.push(parsedJSON[i].letter_id);
         tempLetterContent.push(parsedJSON[i].letter);
       })
-      setState(prevState => ({ content: tempLetterContent, letter_id: tempLetterId }));
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
-  getLetters();
-  }, []);
-
-  useEffect(() => {
-    console.log(state.content);
-    console.log(state.letter_id);
-  }, [state.content, state.letter_id])
-
-  useEffect(() => {
-    // Get ten letters from database
-   const getInbox = async() => {
-   let letter_id = state.letter_id[index.letter];
-    try {
-    const body = {letter_id};
-      const response = await fetch("http://localhost:3000/dashboard/getinbox",
+      
+      // Get responses from database
+      let letter_id = tempLetterId[index.letter];
+      console.log("letter_id", letter_id);
+      const body = {letter_id};
+      const responses = await fetch("http://localhost:3000/dashboard/getinboxresponses",
         {
           method: "POST",
           headers: {
@@ -182,31 +163,106 @@ const Inbox = (props) => {
           },
         body: JSON.stringify(body)
         }
-      );
+      )
+      .then(value => value.json());
+
+      Promise.all([letters, responses])
+      .then(()=> {
+        let parsedLetters = JSON.parse(letters);
+        console.log(parsedLetters);
+        let parsedResponses = JSON.parse(responses);
+        console.log(parsedResponses);
+
+        // Prepare to save response data
+        setMaximum(() => ({ 
+          letter: Object.keys(parsedLetters).length - 1,
+          response: Object.keys(parsedResponses).length - 1 })
+        );
+        let tempResponseContent = [];
+        Object.keys(parsedResponses).forEach(i => {
+          console.log(parsedResponses[i])
+          tempResponseContent.push(parsedResponses[i].response);
+        })
+
+        setState(() => ({
+          letter: tempLetterContent, 
+          letter_id: tempLetterId,
+          response: tempResponseContent,
+        }));
+        }
+      )
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+  getInbox();
+  }, []);
+
+  // Send response content to database
+  const getResponses = async(e) => {
+    try {
+      let letter_id = state.letter_id[e];
+      console.log("letter_id", letter_id);
+      const body = {letter_id};
+      const response = await fetch("http://localhost:3000/dashboard/getinboxresponses",
+        {
+          method: "POST",
+          headers: {
+            'Content-type': 'application/json',
+            token: localStorage.token
+          },
+        body: JSON.stringify(body)
+        }
+      )
       const parseResponse = await response.json();
-      let parsedJSON = JSON.parse(parseResponse);
-      console.log(parsedJSON);
-
-      // setMaxLetters(Object.keys(parsedJSON).length - 1);
-
-      // let tempLetterId = [];
-      // let tempLetterContent = [];
-      // Object.keys(parsedJSON).forEach(i => {
-      //   tempLetterId.push(parsedJSON[i].letter_id);
-      //   tempLetterContent.push(parsedJSON[i].letter);
-      // })
-      // setState(prevState => ({ content: tempLetterContent, letter_id: tempLetterId }));
+      console.log(parseResponse);
+      if(parseResponse) {
+        console.log("response received!")
+        let parsedJSON = JSON.parse(parseResponse);
+        console.log(parsedJSON);
+        setMaximum(() => ({ 
+          letter: maximum.letter,
+          response: Object.keys(parsedJSON).length - 1 })
+        );
+        let tempResponseContent = [];
+        Object.keys(parsedJSON).forEach(i => {
+          console.log(parsedJSON[i])
+          tempResponseContent.push(parsedJSON[i].response);
+        })
+        setState(() => ({
+          letter: state.letter, 
+          letter_id: state.letter_id,
+          response: tempResponseContent,
+        }));
+      } else {
+        setState(() => ({
+          letter: state.letter, 
+          letter_id: state.letter_id,
+          response: [],
+        }));
+      }
     } catch (err) {
       console.error(err.message);
     }
   };
-  getInbox();
-  }, [index.letter, state.letter_id]);
+
+  useEffect(() => {
+    console.log("logging!")
+    console.log(state.letter);
+    console.log(state.letter_id);
+    console.log(state.response);
+    console.log(maximum.letter);
+    console.log(maximum.response);
+    console.log(index.letter);
+    console.log(index.response);
+    console.log(state.response[index.response])
+  }, [state.letter, state.letter_id, state.response, state.response_id, maximum.letter, maximum.response, index.letter, index.response])
 
   // Displays the previous letter
   const clickPreviousLetter = () => {
     console.log("back button clicked!")
     if(index.letter !== 0) {
+      getResponses(index.letter-1);
       setIndex({...index, letter: index.letter-1});
     }
   }
@@ -214,7 +270,8 @@ const Inbox = (props) => {
   // Displays the next letter
   const clickNextLetter = () => {
     console.log("next button clicked!")
-    if(index.letter !== maxLetters) {
+    if(index.letter !== maximum.letter) {
+      getResponses(index.letter+1);
       setIndex({...index, letter: index.letter+1});
     }
   }
@@ -230,11 +287,10 @@ const Inbox = (props) => {
   // Displays the next response
   const clickNextResponse = () => {
     console.log("next button clicked!")
-    if(index.response !== maxLetters) {
+    if(index.response !== maximum.letter) {
       setIndex({...index, response: index.response+1});
     }
   }
-
 
   // Defines UI for Reply component
   return (
@@ -244,37 +300,39 @@ const Inbox = (props) => {
       <div className="row">
         <div className="centered">
           <div className="row">
-            <LetterButtons arrow={"back"} />
 
-            { state.content.length > 0 ?
-            <Card sx={{ minWidth: 600, minHeight: 400 }}>
-              {state.content[index.letter]}
-            </Card>
+            { state.letter ?
+            <Fragment>
+              <LetterButtons arrow={"back"} />
+              <Card sx={{ minWidth: 600, minHeight: 400 }}>
+                {state.letter[index.letter]}
+              </Card>
+              <LetterButtons arrow={"next"} />
+            </Fragment>
             :
             null
             }
 
-            <LetterButtons arrow={"next"} />
           </div>
           <br />
-          <div className="buttons">
-            <Button variant="contained" onClick={() => setOpen(true)}>Archive Letter</Button>
-          </div>
         </div>
         <div className="centered">
           <div className="row">
-            <ResponseButtons arrow={"back"} />
 
-            <Card sx={{ minWidth: 600, minHeight: 400 }}>
-              {responsesDict[index.response]}
-            </Card>
+            { state.response.length > 0 ?
+            <Fragment>
+              <ResponseButtons arrow={"back"} />
+              <Card sx={{ minWidth: 600, minHeight: 400 }}>
+                {state.response[index.response]}
+              </Card>
+              <ResponseButtons arrow={"next"} />
+            </Fragment>
+            :
+            null
+            }
 
-            <ResponseButtons arrow={"next"} />
           </div>
           <br />
-          <div className="buttons">
-            <Button variant="contained" onClick={() => setOpen(true)}>Archive Response</Button>
-          </div>
         </div>
       </div>
       <br />
