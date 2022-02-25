@@ -16,7 +16,7 @@ router.post("/sendletter", authorize, async(req,res) => {
         return res.json(true);
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Server Error");     
+        res.status(500).send(false);     
     }
 })
 
@@ -43,7 +43,7 @@ router.get("/requestletters", authorize, async(req,res) => {
         
         // if letter is empty 
         if (letters.rows.length === 0) {
-            return res.status(400).json("Bad motherfucking request letter no here")
+            return res.status(400).json(false)
         }
 
         const jsonString = JSON.stringify(Object.assign({}, letters.rows))
@@ -53,7 +53,7 @@ router.get("/requestletters", authorize, async(req,res) => {
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Server Error");     
+        res.status(500).send(false);     
     }
 })
 
@@ -68,7 +68,7 @@ router.post("/sendresponse", authorize, async(req,res) => {
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Server Error");     
+        res.status(500).send(false);     
     }
 })
 
