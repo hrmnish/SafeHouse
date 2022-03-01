@@ -24,6 +24,9 @@ const Desk = ({ setAuth }) => {
       <Button variant="contained" onClick={() => navigate("/letter")}>Write a letter</Button>
       <br />
       <br />
+      <Button variant="contained" onClick={() => navigate("/reply")}>Reply to a letter</Button>
+      <br />
+      <br />
       <Button variant="contained" onClick={() => navigate("/inbox")}>View Inbox</Button>
     </div>
   );

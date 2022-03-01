@@ -2,6 +2,8 @@ import React, { Fragment, useState, useEffect } from 'react';
 import Login from './components/Login/Login';
 import Desk from './components/Desk/Desk';
 import Letter from './components/Letter/Letter';
+import Reply from './components/Reply/Reply';
+import Response from './components/Response/Response';
 import Inbox from './components/Inbox/Inbox';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import './App.css';
@@ -16,7 +18,7 @@ function App() {
 
   async function isAuth() {
     try {
-      const response = await fetch("http://localhost:5000/auth/is-verified", {
+      const response = await fetch("http://localhost:3000/auth/is-verified", {
         method: "GET",
         headers: { token: localStorage.token }
       });
@@ -70,6 +72,24 @@ function App() {
               element={
                 isAuthenticated ? (
                 <Letter setAuth={setAuth}/>
+                ) : (
+                <Navigate to="/login" />
+              )}
+            />
+             <Route 
+              path="/reply" 
+              element={
+                isAuthenticated ? (
+                <Reply setAuth={setAuth}/>
+                ) : (
+                <Navigate to="/login" />
+              )}
+            />
+             <Route 
+              path="/response" 
+              element={
+                isAuthenticated ? (
+                <Response setAuth={setAuth}/>
                 ) : (
                 <Navigate to="/login" />
               )}

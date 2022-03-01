@@ -1,0 +1,38 @@
+.inbox-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-letters {
+    width: 500px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 50%;
+}
+
+.bottom-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 50%;
+    margin-top: 150px;
+}

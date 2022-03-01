@@ -1,0 +1,20 @@
+.reply-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.letters {
+    display: flex;
+    flex-direction: row;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.MuiIconButton-root {
+    width: 50px;
+}
