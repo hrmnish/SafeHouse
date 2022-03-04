@@ -1,44 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
-import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import Typography from '@mui/material/Typography';
 import './Inbox.css';
-
-// function SimpleDialog(props) {
-
-//   // Local variables
-//   const { onClose, open } = props;
-  
-//   const navigate = useNavigate();
-
-//   // Defines UI for confirmation dialog
-//   return (
-//     <Dialog fullWidth onClose={() => onClose()} open={open}>
-//       <div className="centered">
-//         <DialogTitle align="center">Are you sure you want to archive this?</DialogTitle>
-//         <br />
-//         <br />
-//         <br />
-//         <div className="buttons">
-//           <Button onClick={() => onClose()}>Cancel</Button>
-//           <Button onClick={() => navigate("/desk")}>Archive</Button>
-//         </div>
-//       </div>
-//     </Dialog>
-//   );
-// }
-
-// SimpleDialog.propTypes = {
-//   onClose: PropTypes.func.isRequired,
-//   open: PropTypes.bool.isRequired,
-// };
 
 const Inbox = (props) => {
   // Local variables
@@ -59,9 +26,6 @@ const Inbox = (props) => {
   // Tracks if users want to sort by letter
   const [sortByLetter, setSort] = useState(false);
 
-  // Defines whether the dialog is open/closed
-  const [open, setOpen] = React.useState(false);
-
   // Stores loaded letters and letter ids
   let [state, setState] = useState({
     letter_id: [],
@@ -69,12 +33,13 @@ const Inbox = (props) => {
     response: [],
   });
 
+  // Controls arrows for letters
   function LetterButtons(props) {
+    if(state.letter.length < 1) {
+      return null;
+    }
     if(sortByLetter) {
-      if(state.letter.length <= 1) {
-        return null;
-      }
-      else if(props.arrow === "back") {
+      if(props.arrow === "back") {
         if (index.letter > 0) {
         return  <IconButton onClick={clickPreviousLetter} disableRipple>
                   <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
@@ -96,12 +61,22 @@ const Inbox = (props) => {
           }
       }
     } else {
-      return null;
+      if(props.arrow === "back") {
+        return  <IconButton onClick={clickPreviousLetter} disabled disableRipple>
+                    <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
+                  </IconButton>;
+      }
+      else {
+        return  <IconButton onClick={clickNextLetter} disabled disableRipple>
+                      <NavigateNextIcon sx={{ fontSize: "50px" }}/>
+                    </IconButton>
+      }
     }
   }
 
+  // Controls arrows for responses
   function ResponseButtons(props) {
-    if(state.response.length <= 1) {
+    if(state.response.length < 1) {
       return null;
     }
     else if(props.arrow === "back") {
@@ -127,26 +102,26 @@ const Inbox = (props) => {
     }
   }
 
+  // Controls buttons on bottom row
   function ActionButtons(props) {
     if(state.letter.length === 0) {
-      return <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
+      return <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
     }
     else if(sortByLetter) {
       return <Fragment>
-        <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-        <Button variant="contained" onClick={() => setSort(!sortByLetter)}>Sort by Response</Button>
-        {/* <Button variant="contained">Say Thanks</Button> */}
+        <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
+        <Button variant="outlined" onClick={() => setSort(!sortByLetter)}>Sort by Response</Button>
       </Fragment>
     } 
     else {
       return <Fragment>
-        <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-        <Button variant="contained" onClick={() => setSort(!sortByLetter)}>Sort by Letter</Button>
-        {/* <Button variant="contained">Say Thanks</Button> */}
+        <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
+        <Button variant="outlined" onClick={() => setSort(!sortByLetter)}>Sort by Letter</Button>
       </Fragment>
     }
   }
 
+  // Retrieve letters and initial response
   useEffect(() => {
     const getInbox = async() => {
     try {
@@ -303,57 +278,35 @@ const Inbox = (props) => {
     }
   }
 
-  // Defines UI for Reply component
+  // Defines UI for Inbox component
   return (
     <div className="inbox-container">
-      <h1>Inbox</h1>
-      <br />
-      <div className="row">
-        <div className="centered">
-          <div className="row">
-
-            { state.letter.length > 0 ?
-            <Fragment>
-              <LetterButtons arrow={"back"} />
-              <Card sx={{ minWidth: 600, minHeight: 400 }}>
-                {state.letter[index.letter]}
-              </Card>
-              <LetterButtons arrow={"next"} />
-            </Fragment>
-            :
-            <Typography variant="h6" className="no-letters">You have not sent any letters yet.</Typography>
-            }
-
-          </div>
-          <br />
+    { state.letter.length > 0 ?
+      <Fragment>
+        <div className="label">
+          <div className="label-text">Look back at past letters</div>
         </div>
-        <div className="centered">
-          <div className="row">
-
-            { state.response.length > 0 ?
-            <Fragment>
-              <ResponseButtons arrow={"back"} />
-              <Card sx={{ minWidth: 600, minHeight: 400 }}>
-                {state.response[index.response]}
-              </Card>
-              <ResponseButtons arrow={"next"} />
-            </Fragment>
-            :
-            null
-            }
-
-          </div>
-          <br />
+        <div className="row">
+          <LetterButtons arrow={"back"} />
+          <Card>{state.letter[index.letter]}</Card>
+          <LetterButtons arrow={"next"} />
+          <ResponseButtons arrow={"back"} />
+          { state.response.length > 0 ?
+          <Card>{state.response[index.response]}</Card>
+          :
+          null
+          }
+          <ResponseButtons arrow={"next"} />
         </div>
-      </div>
-      <br />
-      <div className="bottom-buttons">
+      </Fragment>
+    :
+    <div className="label">
+      <div className="label-text">You have not sent any letters yet</div>
+    </div>
+    }
+    <div className="bottom-buttons">
       <ActionButtons></ActionButtons>
-      </div>
-      {/* <SimpleDialog
-        open={open}
-        onClose={() => setOpen(false)}
-      /> */}
+    </div>
     </div>
   );
 };

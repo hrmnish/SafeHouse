@@ -1,0 +1,17 @@
+.desk-container {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../../images/home.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center bottom;
+}
+
+.button-row {
+    display: flex;
+    flex-direction: row;
+    height: 150px;
+    margin-top: 200px;
+}

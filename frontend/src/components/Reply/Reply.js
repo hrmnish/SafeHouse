@@ -5,7 +5,6 @@ import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import Typography from '@mui/material/Typography';
 import './Reply.css';
 
 
@@ -104,36 +103,35 @@ const Reply = () => {
   // Defines UI for Reply component
   return (
     <div className="reply-container">
-      <h1>Reply to a letter!</h1>
-      <br />
-      <div className="letters">
-        <LetterButtons arrow="back"></LetterButtons>
-
-        { state.letter.length > 0 ?
-        <Card sx={{ minWidth: 600, minHeight: 400 }}>
-          {state.letter[index]}
-        </Card>
-        :
-        <Typography variant="h6">Your letters are being delievered.<br />Please check again soon!</Typography>
-        }
-
-        <LetterButtons arrow="next"></LetterButtons>
-      </div>
-      <br />
-      <div className="buttons"> 
-        { state.letter.length > 0 ?
-        <Fragment>
-          <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-          <Button variant="contained" onClick={() => navigate("/response",  
+      { state.letter.length > 0 ?
+      <Fragment>
+        <div className="label">
+          <div className="label-text">You've got mail!</div>
+        </div>
+        <div className="letters">
+          <LetterButtons arrow="back"></LetterButtons>
+          <Card>{state.letter[index]}</Card>
+          <LetterButtons arrow="next"></LetterButtons>
+        </div>
+        <div className="buttons"> 
+          <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
+          <Button variant="outlined" onClick={() => navigate("/response",  
             { state: {letter: state.letter[index], 
               letter_id: state.letter_id[index]}})}>
             Reply
           </Button>
-        </Fragment>
-        : 
-        <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-        }
-      </div>
+        </div>
+      </Fragment>
+      :
+      <Fragment>
+        <div className="label">
+          <div className="label-text">
+          Your letters are being delievered.<br />Please check again soon!
+          </div>
+        </div>
+        <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
+      </Fragment>
+      }
     </div>
   );
 };

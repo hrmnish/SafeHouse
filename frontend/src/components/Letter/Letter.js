@@ -22,9 +22,9 @@ function SimpleDialog(props) {
       <br />
       <br />
       <br />
-      <br />
-      <br />
-      <Button onClick={() => navigate("/desk")}>Return to Desk</Button>
+      <button className="dialog-button" onClick={() => navigate("/desk")}>
+        Return to Desk
+      </button>
     </Dialog>
   );
 }
@@ -72,20 +72,23 @@ const Letter = (props) => {
   // Defines UI for Letter component
   return (
     <div className="letter-container">
-      <h1>Write a letter</h1>
-      <br />
+      <div className="label">
+       <div className="label-text">
+         What's on your mind?
+       </div>
+      </div>
+      <div className="letter">
       <TextField 
         multiline 
         fullWidth 
-        rows={20} 
-        placeholder="What's on your mind?" 
+        rows={23} 
+        placeholder="Write your letter here" 
         onChange={e => setState(e.target.value)} 
       />
-      <br />
-      <br />
+      </div>
       <div className="buttons">
-        <Button variant="contained" onClick={() => navigate("/desk")}>Go Back</Button>
-        <Button variant="contained" onClick={sendLetter}>Send</Button>
+        <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
+        <Button variant="outlined" onClick={sendLetter}>Send</Button>
       </div>
       <SimpleDialog
         open={open}

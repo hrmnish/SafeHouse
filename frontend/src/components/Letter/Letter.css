@@ -1,14 +1,54 @@
 .letter-container {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #E5BF99;
+    /* border: 2px solid green; */
+}
+
+.label {
+    display: flex;
     justify-content: center;
     align-items: center;
+    width: 400px;
+    height: 90px;
+    background: #F5EADC;
+    border: 3px solid #050300;
+    border-radius: 10px;
+    margin: 35px 0px;
+}
+
+.label-text {
+   font-size: 25px;
+}
+
+.letter {
     width: 600px;
+    /* border: 2px solid yellow; */
 }
 
 .buttons {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    width: 60px;
+    /* border: 2px solid red; */
+}
+
+.dialog-button {
+    width: 300px;
+    height: 50px;
+    background-color: white;
+    border: 3px solid black;
+    border-radius: 10px;
+    margin-bottom : 15px;
+    align-self: center;
+    font-size: 20px;
+}
+
+.dialog-button:hover {
+    background-color: #FFF5F5;
 }
 

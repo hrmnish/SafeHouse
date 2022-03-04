@@ -4,9 +4,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
-import logo from '../images/logo.svg';
+import logo from '../../images/logo.svg';
 import './Login.css';
 
 // Defines Sign In / Sign Up Tabs component
@@ -142,7 +141,7 @@ const Login = ({setAuth}) => {
             <div className="small-message">Sign in to your account</div>
             <Input placeholder="Email" disableUnderline onChange={e => setState({...state, email: e.target.value})}/>
             <Input placeholder="Password" disableUnderline onChange={e => setState({...state, password: e.target.value})}/>
-            <Button variant="outlined" onClick={clickSignIn}>Sign In</Button>
+            <button className="button" onClick={clickSignIn}>Sign In</button>
           </TabPanel>
           <TabPanel className="tab-panel" value={value} index={1}>
             <div className="large-message">Welcome to SafeHouse</div>
@@ -150,7 +149,7 @@ const Login = ({setAuth}) => {
             <Input placeholder="Name" disableUnderline onChange={e => setState({...state, name: e.target.value})}/>
             <Input placeholder="Email" disableUnderline onChange={e => setState({...state, email: e.target.value})}/>
             <Input placeholder="Password" disableUnderline onChange={e => setState({...state, password: e.target.value})}/>
-            <Button variant="outlined" onClick={clickSignUp}>Sign Up</Button>
+            <button className="button" onClick={clickSignUp}>Sign Up</button>
           </TabPanel>
         </div>
       </div>
