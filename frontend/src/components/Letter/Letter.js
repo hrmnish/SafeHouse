@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
+import SentLetter from '../../images/letter.svg';
 import './Letter.css';
 
 function SimpleDialog(props) {
@@ -18,10 +19,7 @@ function SimpleDialog(props) {
   return (
     <Dialog fullWidth onClose={() => onClose()} open={open}>
       <DialogTitle align="center">Your letter has been mailed!</DialogTitle>
-      <br />
-      <br />
-      <br />
-      <br />
+      <img src={SentLetter} className="letter-icon" width={200} alt="Mailing a letter"/>
       <button className="dialog-button" onClick={() => navigate("/desk")}>
         Return to Desk
       </button>
