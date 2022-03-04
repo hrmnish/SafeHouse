@@ -301,7 +301,7 @@ const Inbox = (props) => {
       </Fragment>
     :
     <div className="label">
-      <div className="label-text">You have not sent any letters yet</div>
+      <div className="label-text">You have not sent any letters yet.</div>
     </div>
     }
     <div className="bottom-buttons">

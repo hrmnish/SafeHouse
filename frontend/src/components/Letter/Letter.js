@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import SentLetter from '../../images/letter.svg';
+import Pen from '../../images/pen.svg';
 import './Letter.css';
 
 function SimpleDialog(props) {
@@ -83,6 +84,7 @@ const Letter = (props) => {
         placeholder="Write your letter here" 
         onChange={e => setState(e.target.value)} 
       />
+      <img src={Pen} className="pen" alt="Pen"/>
       </div>
       <div className="buttons">
         <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>

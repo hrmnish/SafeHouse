@@ -5,7 +5,6 @@
     width: 100vw;
     height: 100vh;
     background-color: #E5BF99;
-    /* border: 2px solid green; */
 }
 
 .label {
@@ -25,8 +24,16 @@
 }
 
 .letter {
-    width: 600px;
-    /* border: 2px solid yellow; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.pen {
+    position: absolute;
+    width: 130px;
+    left: 1300px;
+    top: 250px;
 }
 
 .letter-icon {
@@ -39,7 +46,6 @@
     flex-direction: row;
     justify-content: space-around;
     width: 60px;
-    /* border: 2px solid red; */
 }
 
 .dialog-button {
