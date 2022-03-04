@@ -38,39 +38,14 @@ const Inbox = (props) => {
     if(state.letter.length < 1) {
       return null;
     }
-    if(sortByLetter) {
-      if(props.arrow === "back") {
-        if (index.letter > 0) {
-        return  <IconButton onClick={clickPreviousLetter} disableRipple>
-                  <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
-                </IconButton>;
-        } else {
-          return  <IconButton onClick={clickPreviousLetter} disabled disableRipple>
-                    <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
-                  </IconButton>;
-        }
-      } else {
-        if (index.letter < maximum.letter) {
-          return  <IconButton onClick={clickNextLetter} disableRipple>
-                    <NavigateNextIcon sx={{ fontSize: "50px" }}/>
-                  </IconButton>;
-          } else {
-            return  <IconButton onClick={clickNextLetter} disabled disableRipple>
-                      <NavigateNextIcon sx={{ fontSize: "50px" }}/>
-                    </IconButton>
-          }
-      }
+    else if(props.arrow === "back") {
+      return  <IconButton onClick={clickPreviousLetter} disableRipple>
+                <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
+              </IconButton>;
     } else {
-      if(props.arrow === "back") {
-        return  <IconButton onClick={clickPreviousLetter} disabled disableRipple>
-                    <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
-                  </IconButton>;
-      }
-      else {
-        return  <IconButton onClick={clickNextLetter} disabled disableRipple>
-                      <NavigateNextIcon sx={{ fontSize: "50px" }}/>
-                    </IconButton>
-      }
+        return  <IconButton onClick={clickNextLetter} disableRipple>
+                  <NavigateNextIcon sx={{ fontSize: "50px" }}/>
+                </IconButton>;
     }
   }
 
@@ -80,24 +55,24 @@ const Inbox = (props) => {
       return null;
     }
     else if(props.arrow === "back") {
-      if (index.response > 0) {
+      if(state.response.length > 1) {
       return  <IconButton onClick={clickPreviousResponse} disableRipple>
                 <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
               </IconButton>;
       } else {
-        return  <IconButton onClick={clickPreviousResponse} disabled disableRipple>
-                  <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
-                </IconButton>;
+        return <IconButton onClick={clickPreviousResponse} disabled disableRipple>
+                <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
+              </IconButton>;
       }
-    } else {
-      if (index.response < maximum.response) {
+    } else { 
+        if(state.response.length > 1) {
         return  <IconButton onClick={clickNextResponse} disableRipple>
                   <NavigateNextIcon sx={{ fontSize: "50px" }}/>
                 </IconButton>;
         } else {
           return  <IconButton onClick={clickNextResponse} disabled disableRipple>
                     <NavigateNextIcon sx={{ fontSize: "50px" }}/>
-                  </IconButton>
+                  </IconButton>;
         }
     }
   }
@@ -110,15 +85,32 @@ const Inbox = (props) => {
     else if(sortByLetter) {
       return <Fragment>
         <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
-        <Button variant="outlined" onClick={() => setSort(!sortByLetter)}>Sort by Response</Button>
+        <Button variant="outlined" onClick={sortInbox}>Sort by Response</Button>
       </Fragment>
     } 
     else {
       return <Fragment>
         <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
-        <Button variant="outlined" onClick={() => setSort(!sortByLetter)}>Sort by Letter</Button>
+        <Button variant="outlined" onClick={sortInbox}>Sort by Letter</Button>
       </Fragment>
     }
+  }
+
+  // Sort inbox by letter or response
+  const sortInbox = () => {
+    getResponses(maximum.letter);
+    setIndex(() => ({ 
+      letter: 0,
+      response: 0
+    }));
+    console.log(state.letter.reverse());
+    console.log(state.letter_id.reverse());
+    setState(() => ({
+      letter: state.letter.reverse(), 
+      letter_id: state.letter_id.reverse(),
+      response: state.response,
+    }));
+    setSort(!sortByLetter);
   }
 
   // Retrieve letters and initial response
@@ -237,22 +229,25 @@ const Inbox = (props) => {
   };
 
   // useEffect(() => {
-  //   console.log("logging!")
-  //   console.log(state.letter);
-  //   console.log(state.letter_id);
-  //   console.log(state.response);
-  //   console.log(maximum.letter);
-  //   console.log(maximum.response);
-  //   console.log(index.letter);
-  //   console.log(index.response);
-  //   console.log(state.response[index.response])
+  //   // console.log("logging!")
+  //   // console.log(state.letter);
+  //   // console.log(state.letter_id);
+  //   // console.log(state.response);
+  //   // console.log(maximum.letter);
+  //   // console.log(maximum.response);
+  //   // console.log("index.letter", index.letter);
+  //   // console.log("index.response", index.response);
+  //   // console.log(state.response[index.response])
   // }, [state.letter, state.letter_id, state.response, state.response_id, maximum.letter, maximum.response, index.letter, index.response])
 
   // Displays the previous letter
   const clickPreviousLetter = () => {
     if(index.letter !== 0) {
       getResponses(index.letter-1);
-      setIndex({...index, letter: index.letter-1});
+      setIndex({...index, letter: index.letter-1, response: 0});
+    } else {
+      getResponses(maximum.letter);
+      setIndex({...index, letter: maximum.letter, response: 0});
     }
   }
 
@@ -260,7 +255,10 @@ const Inbox = (props) => {
   const clickNextLetter = () => {
     if(index.letter !== maximum.letter) {
       getResponses(index.letter+1);
-      setIndex({...index, letter: index.letter+1});
+      setIndex({...index, letter: index.letter+1, response: 0});
+    } else {
+      getResponses(0);
+      setIndex({...index, letter: 0, response: 0});
     }
   }
 
@@ -268,13 +266,17 @@ const Inbox = (props) => {
   const clickPreviousResponse = () => {
     if(index.response !== 0) {
       setIndex({...index, response: index.response-1});
+    } else {
+      setIndex({...index, response: maximum.response});
     }
   }
   
   // Displays the next response
   const clickNextResponse = () => {
-    if(index.response !== maximum.letter) {
+    if(index.response !== maximum.response) {
       setIndex({...index, response: index.response+1});
+    } else {
+      setIndex({...index, response: 0});
     }
   }
 
