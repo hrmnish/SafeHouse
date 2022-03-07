@@ -80,26 +80,25 @@ const Response = (props) => {
   // Defines UI for Reply component
   return (
     <div className="response-container">
-      <h1>Respond to a letter!</h1>
-      <br />
+      <div className="label">
+       <div className="label-text">
+         Send some kind words
+       </div>
+      </div>
       <div className="row">
-        <Card sx={{ minWidth: 600, minHeight: 400 }}>
-          {location.state.letter}
-        </Card>
-        <br />
+        <Card>{location.state.letter}</Card>
+        <div className="space"></div>
         <TextField 
           multiline 
-          style = {{width: 600}}
-          rows={20} 
+          fullWidth
+          rows={23} 
           placeholder="Write your response here" 
           onChange={e => setState(e.target.value)} 
         />
       </div>
-      <br />
-      <br />
       <div className="buttons">
-        <Button variant="contained" onClick={() => navigate("/desk")}>Back</Button>
-        <Button variant="contained" onClick={sendResponse}>Send</Button>
+        <Button variant="outlined" onClick={() => navigate("/desk")}>Back</Button>
+        <Button variant="outlined" onClick={sendResponse}>Send</Button>
       </div>
       <SimpleDialog
         open={open}

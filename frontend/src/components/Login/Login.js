@@ -4,8 +4,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
+import logo from '../../images/logo.svg';
 import './Login.css';
 
 // Defines Sign In / Sign Up Tabs component
@@ -123,57 +123,33 @@ const Login = ({setAuth}) => {
     <div className="login-container">
 
       <div className="left-section">
-        <div className="logo">Logo</div>
-        <div className="title">This is SafeHouse</div>
+        <img src={logo} alt="SafeHouse Logo"></img>
+        <div className="small-title">This is</div>
+        <div className="large-title">SafeHouse</div>
       </div>
 
       <div className="right-section"> 
         <div className="credentials">
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-              <Tab label="Sign In" {...a11yProps(0)} />
-              <Tab label="Sign Up" {...a11yProps(1)} />
+              <Tab label="Sign In" sx={{color: 'black'}} disableRipple {...a11yProps(0)} />
+              <Tab label="Sign Up" disableRipple {...a11yProps(1)} />
             </Tabs>
           </Box>
           <TabPanel className="tab-panel" value={value} index={0}>
-            <div>Welcome back</div>
-            <div className="welcome">Sign in to your account</div>
-            <TextField 
-              label="Email" 
-              variant="outlined" 
-              sx={{marginBottom: 2, width: 300 }}
-              onChange={e => setState({...state, email: e.target.value})} 
-            />
-            <TextField 
-              label="Password" 
-              variant="outlined" 
-              sx={{marginBottom: 2, width: 300 }}
-              onChange={e => setState({...state, password: e.target.value})} 
-            />
-            <Button variant="contained" onClick={clickSignIn}>Sign In</Button>
+            <div className="large-message">Welcome back</div>
+            <div className="small-message">Sign in to your account</div>
+            <Input placeholder="Email" disableUnderline onChange={e => setState({...state, email: e.target.value})}/>
+            <Input placeholder="Password" disableUnderline onChange={e => setState({...state, password: e.target.value})}/>
+            <button className="button" onClick={clickSignIn}>Sign In</button>
           </TabPanel>
           <TabPanel className="tab-panel" value={value} index={1}>
-            <div>Welcome to SafeHouse</div>
-            <div className="welcome">Create an account now</div>
-            <TextField 
-              label="Full name" 
-              variant="outlined" 
-              sx={{marginBottom: 2, width: 300 }}
-              onChange={e => setState({...state, name: e.target.value})} 
-            />
-            <TextField 
-              label="Email" 
-              variant="outlined" 
-              sx={{marginBottom: 2, width: 300 }}
-              onChange={e => setState({...state, email: e.target.value})} 
-            />
-            <TextField 
-              label="Password" 
-              variant="outlined" 
-              sx={{marginBottom: 2, width: 300 }}
-              onChange={e => setState({...state, password: e.target.value})} 
-            />
-            <Button variant="contained" onClick={clickSignUp}>Sign Up</Button>
+            <div className="large-message">Welcome to SafeHouse</div>
+            <div className="small-message">Create an account now</div>
+            <Input placeholder="Name" disableUnderline onChange={e => setState({...state, name: e.target.value})}/>
+            <Input placeholder="Email" disableUnderline onChange={e => setState({...state, email: e.target.value})}/>
+            <Input placeholder="Password" disableUnderline onChange={e => setState({...state, password: e.target.value})}/>
+            <button className="button" onClick={clickSignUp}>Sign Up</button>
           </TabPanel>
         </div>
       </div>
