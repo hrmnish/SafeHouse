@@ -10,8 +10,10 @@ import './Login.css';
 
 // Defines Sign In / Sign Up Tabs component
 function TabPanel(props) {
+  // Grabs variable values from props
   const { children, value, index, ...other } = props;
   
+  // Defines UI for Tabs component
   return (
     <div
       role="tabpanel"
@@ -39,17 +41,17 @@ TabPanel.propTypes = {
 // Defines switching between Tabs
 function a11yProps(index) {
   return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
   };
 }
 
-// Login component
 const Login = ({setAuth}) => {
 
-  // Local variables
+  // Stores which tab to display
   const [value, setValue] = useState(0);
 
+  // Stores sign up/log in information
   const [state, setState] = useState({
     email: '',
     password: '',
@@ -140,7 +142,7 @@ const Login = ({setAuth}) => {
             <div className="large-message">Welcome back</div>
             <div className="small-message">Sign in to your account</div>
             <Input placeholder="Email" disableUnderline onChange={e => setState({...state, email: e.target.value})}/>
-            <Input placeholder="Password" disableUnderline onChange={e => setState({...state, password: e.target.value})}/>
+            <Input placeholder="Password" type="password" disableUnderline onChange={e => setState({...state, password: e.target.value})}/>
             <button className="button" onClick={clickSignIn}>Sign In</button>
           </TabPanel>
           <TabPanel className="tab-panel" value={value} index={1}>
@@ -148,7 +150,7 @@ const Login = ({setAuth}) => {
             <div className="small-message">Create an account now</div>
             <Input placeholder="Name" disableUnderline onChange={e => setState({...state, name: e.target.value})}/>
             <Input placeholder="Email" disableUnderline onChange={e => setState({...state, email: e.target.value})}/>
-            <Input placeholder="Password" disableUnderline onChange={e => setState({...state, password: e.target.value})}/>
+            <Input placeholder="Password" type="password" disableUnderline onChange={e => setState({...state, password: e.target.value})}/>
             <button className="button" onClick={clickSignUp}>Sign Up</button>
           </TabPanel>
         </div>

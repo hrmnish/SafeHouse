@@ -7,9 +7,8 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import './Reply.css';
 
-
 const Reply = () => {
-  // Local variables
+  // Used to navigate between pages
   const navigate = useNavigate();
 
   // Total number of letters
@@ -24,35 +23,36 @@ const Reply = () => {
     letter: []
   });
 
+  // Controls arrows for letters
   function LetterButtons(props) {
-    if(state.letter.length <= 1) {
+    if(state.letter.length < 1) {
       return null;
     }
     else if(props.arrow === "back") {
-      if (index > 0) {
-      return  <IconButton onClick={clickBack} disableRipple>
+      if(state.letter.length > 1) {
+      return  <IconButton onClick={clickPreviousLetter} disableRipple>
                 <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
               </IconButton>;
       } else {
-        return  <IconButton onClick={clickBack} disabled disableRipple>
-                  <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
-                </IconButton>;
+        return <IconButton onClick={clickPreviousLetter} disabled disableRipple>
+                <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
+              </IconButton>;
       }
     } else {
-      if (index < maxLetters) {
-        return  <IconButton onClick={clickNext} disableRipple>
+      if(state.letter.length > 1) {
+        return  <IconButton onClick={clickNextLetter} disableRipple>
                   <NavigateNextIcon sx={{ fontSize: "50px" }}/>
                 </IconButton>;
-        } else {
-          return  <IconButton onClick={clickNext} disabled disableRipple>
-                    <NavigateNextIcon sx={{ fontSize: "50px" }}/>
-                  </IconButton>
-        }
-    } 
+      } else {
+        return  <IconButton onClick={clickNextLetter} disabled disableRipple>
+                  <NavigateNextIcon sx={{ fontSize: "50px" }}/>
+                </IconButton>;
+      }
+    }
   }
 
   useEffect(() => {
-    // Get ten letters from database
+    // Get at most ten letters from database
    const getLetters = async() => {
     try {
       const response = await fetch("http://localhost:3000/dashboard/requestletters",
@@ -67,9 +67,8 @@ const Reply = () => {
       const parseResponse = await response.json();
       if(parseResponse) {
         let parsedJSON = JSON.parse(parseResponse);
-
+        // Prepare to save letter and letter_id data
         setMaxLetters(Object.keys(parsedJSON).length - 1);
-
         let tempLetterId = [];
         let tempLetterContent = [];
         Object.keys(parsedJSON).forEach(i => {
@@ -87,16 +86,20 @@ const Reply = () => {
   }, []);
 
   // Displays the previous letter
-  const clickBack = () => {
+  const clickPreviousLetter = () => {
     if(index !== 0) {
-      setIndex(index - 1)
+      setIndex(index - 1);
+    } else {
+      setIndex(maxLetters);
     }
   }
 
    // Displays the next letter
-  const clickNext = () => {
+  const clickNextLetter = () => {
     if(index !== maxLetters) {
       setIndex(index + 1)
+    } else {
+      setIndex(0);
     }
   }
 

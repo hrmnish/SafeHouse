@@ -5,42 +5,44 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
+import SentLetter from '../../images/letter.svg';
 import Card from '@mui/material/Card';
 
 import './Response.css';
 
+// Defines confirmation dialog component
 function SimpleDialog(props) {
 
-    // Local variables
-    const { onClose, open } = props;
-    
-    const navigate = useNavigate();
+  // Controls opening and closing dialog
+  const { onClose, open } = props;
   
-    // Defines UI for confirmation dialog
-    return (
-      <Dialog fullWidth onClose={() => onClose()} open={open}>
-        <DialogTitle align="center">Your letter has been mailed!</DialogTitle>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <Button onClick={() => navigate("/desk")}>Return to Desk</Button>
-      </Dialog>
-    );
-  }
-  
-  SimpleDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
-  };
+  // Used to navigate between pages
+  const navigate = useNavigate();
+
+  // Defines UI for confirmation dialog
+  return (
+    <Dialog fullWidth onClose={() => onClose()} open={open}>
+      <DialogTitle align="center">Your letter has been mailed!</DialogTitle>
+      <img src={SentLetter} className="letter-icon" width={200} alt="Mailing a letter"/>
+      <button className="dialog-button" onClick={() => navigate("/desk")}>
+        Return to Desk
+      </button>
+    </Dialog>
+  );
+}
+
+// Defines parameters for dialog component
+SimpleDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+};
 
 const Response = (props) => {
 
-  // Local variables
+  // Used to navigate between pages
   const navigate = useNavigate(); 
 
+  // Used to access parameters between components
   const location = useLocation();
 
   // Store the user's response

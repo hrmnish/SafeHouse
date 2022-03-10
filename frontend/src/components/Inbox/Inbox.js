@@ -8,7 +8,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import './Inbox.css';
 
 const Inbox = (props) => {
-  // Local variables
+  // Used to navigate between pages
   const navigate = useNavigate();
 
   // Total number of letters
@@ -39,13 +39,25 @@ const Inbox = (props) => {
       return null;
     }
     else if(props.arrow === "back") {
+      if(state.letter.length > 1) {
       return  <IconButton onClick={clickPreviousLetter} disableRipple>
                 <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
               </IconButton>;
+      } else {
+        return <IconButton onClick={clickPreviousLetter} disabled disableRipple>
+                <NavigateBeforeIcon sx={{ fontSize: "50px" }}/>
+              </IconButton>;
+      }
     } else {
+      if(state.letter.length > 1) {
         return  <IconButton onClick={clickNextLetter} disableRipple>
                   <NavigateNextIcon sx={{ fontSize: "50px" }}/>
                 </IconButton>;
+      } else {
+        return  <IconButton onClick={clickNextLetter} disabled disableRipple>
+                  <NavigateNextIcon sx={{ fontSize: "50px" }}/>
+                </IconButton>;
+      }
     }
   }
 
@@ -117,7 +129,7 @@ const Inbox = (props) => {
   useEffect(() => {
     const getInbox = async() => {
     try {
-      // Get ten letters from database
+      // Get letters that belong to user
       const letters = await fetch("http://localhost:3000/dashboard/getinboxletters",
       {
         method: "GET",
@@ -155,10 +167,7 @@ const Inbox = (props) => {
       Promise.all([letters, responses])
       .then(()=> {
         let parsedLetters = JSON.parse(letters);
-        //console.log(parsedLetters);
         let parsedResponses = JSON.parse(responses);
-        //console.log(parsedResponses);
-
         // Prepare to save response data
         setMaximum(() => ({ 
           letter: Object.keys(parsedLetters).length - 1,
@@ -183,7 +192,7 @@ const Inbox = (props) => {
   getInbox();
   }, []);
 
-  // Send response content to database
+  // Get responses given a letter_id
   const getResponses = async(e) => {
     try {
       let letter_id = state.letter_id[e];
@@ -199,10 +208,8 @@ const Inbox = (props) => {
         }
       )
       const parseResponse = await response.json();
-      //console.log(parseResponse);
       if(parseResponse) {
         let parsedJSON = JSON.parse(parseResponse);
-        //console.log(parsedJSON);
         setMaximum(() => ({ 
           letter: maximum.letter,
           response: Object.keys(parsedJSON).length - 1 })
@@ -227,18 +234,6 @@ const Inbox = (props) => {
       console.error(err.message);
     }
   };
-
-  // useEffect(() => {
-  //   // console.log("logging!")
-  //   // console.log(state.letter);
-  //   // console.log(state.letter_id);
-  //   // console.log(state.response);
-  //   // console.log(maximum.letter);
-  //   // console.log(maximum.response);
-  //   // console.log("index.letter", index.letter);
-  //   // console.log("index.response", index.response);
-  //   // console.log(state.response[index.response])
-  // }, [state.letter, state.letter_id, state.response, state.response_id, maximum.letter, maximum.response, index.letter, index.response])
 
   // Displays the previous letter
   const clickPreviousLetter = () => {
