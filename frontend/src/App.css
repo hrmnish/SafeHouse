@@ -1,23 +1,24 @@
 .App {
-  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
+/* Input component styling */
+
 .MuiInput-root {
-	border: 3px solid black;
-	border-radius: 20px;
-	padding: 15px;
-	width: 500px;
-	margin-bottom: 20px;
-	background-color: white;
+  border: 3px solid black;
+  border-radius: 20px;
+  padding: 15px;
+  width: 500px;
+  margin-bottom: 20px;
+  background-color: white;
 }
 
 .MuiFormControl-root.MuiTextField-root {
   width: 550px;
   max-width: 550px;
-  /* height: 550px; */
   border: 3px solid black;
   border-radius: 10px;
   background-color: #FFF6F6;
@@ -25,12 +26,17 @@
 
 .MuiFormControl-root.MuiTextField-root:hover {
   border: 3px solid black;
-  /* border: 0px; */
 }
 
-/* .MuiOutlinedInput-notchedOutline:hover {
-	border: 0px;
-} */
+.MuiOutlinedInput-root.MuiInputBase-root fieldset{
+  border: 0px;
+}
+
+.MuiOutlinedInput-root.MuiInputBase-root:hover fieldset {
+  border: 0px;
+}
+
+/* Paper component styling */
 
 .MuiPaper-root.MuiCard-root {
 	width: 550px;
@@ -40,15 +46,16 @@
 	border: 3px solid black;
 	border-radius: 10px;
 	background-color: #FFF6F6;
+	white-space: pre-wrap;
+	overflow: auto;
+	overflow-wrap:normal;
   }
 
-.MuiOutlinedInput-root.MuiInputBase-root fieldset{
-  border: 0px;
+.MuiDialog-container .MuiDialog-paper {
+  background-color: #EED9BE;
 }
 
-.MuiOutlinedInput-root.MuiInputBase-root:hover fieldset {
-  border: 0px;
-}
+/* Button component styling */
 
 .MuiButton-root.MuiButton-outlined {
 	background-color: #F5EADC;
@@ -86,6 +93,8 @@
 	transform: scale(1.1);
 }
 
+/* Tab component styling */
+
 .MuiTabs-flexContainer {
 	width: 500px;
 	display: flex;
@@ -101,13 +110,5 @@
 }
 
 .MuiTabs-indicator {
-	/* color: black;
-	background-color: black;
-	width: 200px;
-	left: 0px; */
 	display: none;
-}
-
-.MuiDialog-container .MuiDialog-paper {
-	background-color: #EED9BE;
 }

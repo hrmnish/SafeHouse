@@ -78,7 +78,7 @@ router.post("/getinboxresponses", authorize, async(req,res) => {
     try {
         const letter_id = req.body.letter_id;
 
-        const response = await pool.query("SELECT response FROM responses WHERE letter_id = $1 ORDER BY response asc", [letter_id]);
+        const response = await pool.query("SELECT response FROM responses WHERE letter_id = $1 ORDER BY send_date DESC", [letter_id]);
         
         const jsonString = JSON.stringify(Object.assign({}, response.rows))
 

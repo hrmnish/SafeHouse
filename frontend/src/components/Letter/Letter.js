@@ -9,11 +9,13 @@ import SentLetter from '../../images/letter.svg';
 import Pen from '../../images/pen.svg';
 import './Letter.css';
 
+// Defines confirmation dialog component
 function SimpleDialog(props) {
 
-  // Local variables
+  // Controls opening and closing dialog
   const { onClose, open } = props;
   
+  // Used to navigate between pages
   const navigate = useNavigate();
 
   // Defines UI for confirmation dialog
@@ -28,6 +30,7 @@ function SimpleDialog(props) {
   );
 }
 
+// Defines parameters for dialog component
 SimpleDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
@@ -38,8 +41,10 @@ const Letter = (props) => {
   // Local variables
   const [state, setState] = useState('');
 
+  // Defines whether the dialog is open/closed
   const [open, setOpen] = React.useState(false);
 
+  // Used to navigate between pages
   const navigate = useNavigate();
 
   // Send letter content to database
