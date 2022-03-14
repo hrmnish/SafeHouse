@@ -13,14 +13,14 @@ router.post("/sendletter", authorize, async(req,res) => {
         const letter = req.body.state;
 
         const insert = await pool.query("INSERT INTO letters (sender_id, letter) VALUES ($1, $2)", [req.user, letter]);
-        return res.json(true);
+        return res.status(200).json(true);
     } catch (error) {
         console.error(error.message);
         res.status(500).send(false);     
     }
 })
 
-// gets top letter from cache, if cache is near empty, update cache **FOR REQUEST A LETTER NOT FOR INBOX**
+
 
 router.get("/requestletters", authorize, async(req,res) => {
     try {
