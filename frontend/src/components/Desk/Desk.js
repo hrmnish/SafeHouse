@@ -8,7 +8,7 @@ import LogoutIcon from '../../images/logout.svg';
 import './Desk.css';
 
 const Desk = ({ setAuth }) => {
-  // Local variables
+  // Used to navigate between pages
   const navigate = useNavigate();
 
   // Log out user and return to login 

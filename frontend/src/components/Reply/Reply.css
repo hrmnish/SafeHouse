@@ -8,27 +8,27 @@
 }
 
 .label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 400px;
-    height: 90px;
-    background: #F5EADC;
-    border: 3px solid #050300;
-    border-radius: 10px;
-    margin: 35px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  height: 90px;
+  background: #F5EADC;
+  border: 3px solid #050300;
+  border-radius: 10px;
+  margin: 35px 0px;
 }
 
 .label-text {
-   font-size: 25px;
+  font-size: 25px;
 }
 
 .letters {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .buttons {
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 }

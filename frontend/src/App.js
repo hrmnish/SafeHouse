@@ -10,12 +10,15 @@ import './App.css';
 
 function App() {
 
+  // Stores whether user is authenticated
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Function to change value of isAuthenticated
   const setAuth = boolean => {
     setIsAuthenticated(boolean);
   };
 
+  // Verify that the user is valid with JWT
   async function isAuth() {
     try {
       const response = await fetch("http://localhost:3000/auth/is-verified", {
@@ -35,6 +38,7 @@ function App() {
     isAuth();
   }, []);
 
+  // Decides which page to display
   return (
     <Fragment>
       <Router>
